@@ -33,6 +33,12 @@ if (input && "showHeadings" in input) {
     showHeadings = input.showHeadings;
 }
 
+/* INPUT: Display as summaries */
+let showSummaries = false;
+if (input && "showSummaries" in input) {
+    showSummaries = input.showSummaries;
+}
+
 /* INPUT: Show warnings */
 let showWarnings = false;
 if (input && "showWarnings" in input) {
@@ -161,6 +167,11 @@ function writeTopics(page, depth) {
         (showTopics && !showLeaves && hasSubtopics)
     );
 
+    let summary = "";
+    if (showSummaries && page.summary) {
+        summary = ": " + page.summary;
+    }
+
     /* Write this page */
     if (writePage) {
         let displayDepth = depth <= 0 ? 1 : depth;
@@ -183,13 +194,13 @@ function writeTopics(page, depth) {
                 let indent = "  ".repeat(displayDepth);
                 let prefix = depth == 0 ? "" : "- ";
                 let bold = showLeaves && hasSubtopics ? "**" : "";
-                lines.push(indent + prefix + bold + page.file.link + bold);
+                lines.push(indent + prefix + bold + page.file.link + bold + summary);
             }
         } else {
             let indent = "  ".repeat(displayDepth - 1);
             let prefix = depth == 0 ? "" : "- ";
             let bold = showLeaves && hasSubtopics ? "**" : "";
-            lines.push(indent + prefix + bold + page.file.link + bold);
+            lines.push(indent + prefix + bold + page.file.link + bold + summary);
         }
     }
 
