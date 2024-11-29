@@ -1,3 +1,32 @@
+/*
+ * This script is for use with RISUS characters.  It uses Dataview to read
+ * properties of a page and render them as a nice RISUS character sheet.
+ * Cliches and extras should be in the following format:
+ *
+ * - Cliche:: Title of Cliche (3d): Description and notes
+ *
+ * Dice and note are optional.  Bold marks (**) are ignored.  The dice, if
+ * provided, will be used to total up the characters's total cost in dice.  
+ *  
+ * Attribute Examples:
+ *
+ * - Name:: Ric Racer
+ * - Player:: John Smith
+ * - Cliche:: Champion Star Racer of Earth (4d)
+ * - Extra:: Wounded (-2d): Ric got into an accident that left him unable
+ *   to race, at least for a while.
+ * - Note:: Cares about the Wei family, and wants to help them succeed.
+ *
+ * Example invocation:
+ *
+ * ```dataviewjs
+ * dv.view("Scripts/rpg/risus_charsheet", {
+ *   page: "Ric Racer",
+ * });
+ * ```
+ *
+ */
+
 /* Check input */
 if (!input.page) {
     return "Error: Please provide input.page.";
@@ -23,6 +52,7 @@ let totalDice = 0;
 /* Parse a cliche */
 const clicheRegex = /^([^(]*)(\s+\((-?\d+)d\))?(:?\s+(.*))?$/
 function parseCliche(cliche) {
+
     /* Remove bold */
     cliche = cliche.replace(/\*\*/g,"");
 
