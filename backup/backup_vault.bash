@@ -7,7 +7,7 @@
 # To run it on start, create a new Startup Applications entry for it and use a command line like the following:
 #
 # ```bash
-# VAULT_NAME=reference BACKUP_DIR=/home/craig/Dropbox/Craig/obsidian-reference-backup bash -c '/home/craig/Documents/Reference/Scripts/backup/backup_vault.bash'
+# env VAULT_NAME=reference BACKUP_DIR=/home/craig/Dropbox/Craig/obsidian-reference-backup bash -c '/home/craig/Documents/Reference/Scripts/backup/backup_vault.bash'
 # ```
 
 
