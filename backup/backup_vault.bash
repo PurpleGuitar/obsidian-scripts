@@ -13,16 +13,16 @@
 
 # Parameter: Vault Name
 if [ -z "$VAULT_NAME" ]; then
-    echo "Please set \$VAULT_NAME, e.g."
+    echo "Please set \$VAULT_NAME, e.g.:"
     echo "export VAULT_NAME=personal"
-    return
+    exit 1
 fi
 
 # Parameter: Backup directory
 if [ -z "$BACKUP_DIR" ]; then
-    echo "Please set \$BACKUP_DIR, e.g."
+    echo "Please set \$BACKUP_DIR, e.g.:"
     echo "export BACKUP_DIR=/home/backup/obsidian-vaults"
-    return
+    exit 1
 fi
 
 # Backup filename
