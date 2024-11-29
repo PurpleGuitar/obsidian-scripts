@@ -20,6 +20,48 @@ if (!page) {
 /* Track total dice. */
 let totalDice = 0;
 
+/* Parse a cliche */
+const clicheRegex = /^([^(]*)(\s+\((-?\d+)d\))?(:?\s+(.*))?$/
+function parseCliche(cliche) {
+    /* Remove bold */
+    cliche = cliche.replace(/\*\*/g,"");
+
+    /* Parse cliche */
+    const match = cliche.match(clicheRegex);
+    if (!match) {
+        return {
+            "output": "",
+            "dice": 0
+        };
+    };
+    let title = match[1];
+    let dice = parseInt(match[3]);
+    let note = match[5];
+
+    /* Render cliche */
+    let output = "";
+
+    /* Title */
+    output += "\n- **" + title + "**";
+
+    /* Dice */
+    if (dice) {
+        output += " (" + dice + "d)";
+    }
+
+    /* Note */
+    if (note) {
+        output += ": " + note;
+    }
+
+    /* Done */
+    return {
+        "output": output,
+        "dice": dice,
+    };
+}
+
+
 /* Name */
 // Name is usually already at the top of the page, so I've commented out
 // this section.  We might want to make this optional in the future if it's
@@ -45,40 +87,34 @@ if (page.portrait) {
         ">)\n";
 }
 
-/* Cliches: */
+/* Cliches */
 let clicheMd = "";
-if (page.cliches) {
+if (page.cliche) {
     clicheMd += "\n\n# Clichés\n";
-    for (const cliche of page.cliches) {
-        totalDice += cliche.dice;
-        clicheMd += "\n- **" + cliche.title + "**";
-        clicheMd += " (" + cliche.dice + "d)";
-        if (cliche.note) {
-            clicheMd += ": " + cliche.note;
-        }
+    for (const cliche of dv.array(page.cliche)) {
+        clicheObj = parseCliche(cliche);
+        clicheMd += clicheObj.output;
+        totalDice += clicheObj.dice;
     }
 }
 
 /* Extras */
 let extraMd = "";
-if (page.extras) {
+if (page.extra) {
     extraMd += "\n\n# Extras\n";
-    for (const extra of page.extras) {
-        totalDice += extra.dice;
-        extraMd += "\n- **" + extra.title + "**";
-        extraMd += " (" + extra.dice + "d)";
-        if (extra.note) {
-            extraMd += ": " + extra.note;
-        }
+    for (const extra of dv.array(page.extra)) {
+        clicheObj = parseCliche(extra);
+        extraMd += clicheObj.output;
+        totalDice += clicheObj.dice;
     }
 }
 
 /* Notes: */
 let noteMd = "";
 let noteCount = 0;
-if (page.notes) {
+if (page.note) {
     noteMd += "\n\n# Notes\n";
-    for (const note of page.notes) {
+    for (const note of dv.array(page.note)) {
         noteMd += "\n- " + note;
     }
 }
@@ -94,3 +130,5 @@ if (input.debug) {
 
 /* All done. */
 return debugMd + portraitMd + playerMd + totalDiceMd + clicheMd + extraMd + noteMd + debugMd;
+
+// vim: set noswapfile :
