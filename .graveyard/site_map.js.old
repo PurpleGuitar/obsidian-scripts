@@ -1,0 +1,165 @@
+
+/*
+ * This DataviewJS script creates a site map starting from the given page.
+ */
+
+
+/* INPUT: Pages to start from, using DataView's FROM syntax. */
+let from = '"' + dv.current().file.path + '"';
+if (input && "from" in input) {
+    from = input.from;
+}
+
+/* INPUT: Show unprocessed files. */
+let showUnprocessed = false;
+if (input && "showUnprocessed" in input) {
+    showUnprocessed = input.showUnprocessed;
+}
+
+/* INPUT: Maximum depth of pages to show. */
+let maxDepth = 1000;
+if (input && "maxDepth" in input) {
+    maxDepth = input.maxDepth;
+}
+
+/* INPUT: Show headers */
+let showHeaders = false;
+if (input && "showHeaders" in input) {
+    showHeaders = input.showHeaders;
+}
+
+/* Get all pages */
+let allPages = dv.pages();
+let allPagesByPath = {};
+allPages.forEach(page => {
+    allPagesByPath[page.file.path] = page;
+});
+let processedPages = [];
+
+/* Get start page(s) */
+let startPages = dv.pages(from);
+
+/* Calculate minimum depth of pages. */
+let minDepthByPagePath = {};
+function calcMinDepth(page, depth = 0) {
+    if (page.file.path in minDepthByPagePath) {
+        if (minDepthByPagePath[page.file.path] <= depth) {
+            /* Only store the min depth */
+            return;
+        }
+    }
+    minDepthByPagePath[page.file.path] = depth;
+    for (const childLink of page.file.outlinks) {
+        if (!childLink.path.endsWith(".md")) {
+            /* Ignore non-Markdown files */
+            continue;
+        }
+        if (!(childLink.path in allPagesByPath)) {
+            /* Don't follow dead links */
+            console.log("WARNING: " + page.file.path + ": No page found for link: " + childLink.path);
+            continue;
+        }
+        childPage = allPagesByPath[childLink.path];
+        calcMinDepth(childPage, depth + 1);
+    }
+}
+
+/* Print a page and process its children */
+function processPage(page, depth = 0) {
+
+    if (depth > maxDepth) {
+        return "";
+    }
+
+    /* Print this page */
+    let out = "";
+    if (showHeaders) {
+        if (depth == 0) {
+            // Don't show root
+        } else if (depth == 1) {
+            out += "# " + page.file.link + "\n\n";
+        } else if (depth == 2) {
+            out += "## " + page.file.link + "\n\n";
+        } else if (depth == 3) {
+            if (maxDepth == 3) {
+                out += "- " + page.file.link + "\n";
+            } else {
+                out += "### " + page.file.link + "\n\n";
+            }
+        } else {
+            let indent = "  ".repeat(depth-3);
+            out += indent + "- " + page.file.link + "\n";
+        }
+    } else {
+        if (depth == 0) {
+            // Don't show root
+        } else {
+            let indent = "  ".repeat(depth-1);
+            out += indent + "- " + page.file.link + "\n";
+        }
+    }
+
+    /* Remember that we processed this page */
+    if (!processedPages.contains(page.file.path)) {
+        processedPages.push(page.file.path);
+    }
+
+    /* Process children */
+    for (const childLink of page.file.outlinks) {
+        if (!childLink.path.endsWith(".md")) {
+            /* Ignore non-Markdown files */
+            continue;
+        }
+        if (processedPages.includes(childLink.path)) {
+            /* Don't reprocess page. */
+            // console.log("DEBUG: " + page.file.path + ": already processed.");
+            continue;
+        }
+        if (!(childLink.path in allPagesByPath)) {
+            /* Don't follow dead links */
+            console.log("WARNING: " + page.file.path + ": No page found for link: " + childLink.path);
+            continue;
+        }
+        // console.log("Calling child: " + childLink.path);
+        childPage = allPagesByPath[childLink.path];
+        if (minDepthByPagePath[childLink.path] <= depth) {
+            /* This page belongs higher in the tree */
+            continue;
+        }
+        out = out + processPage(childPage, depth + 1)
+    }
+    
+    
+
+    /* All done */
+    return out;
+}
+
+/* Process root pages */
+let out = "";
+startPages.forEach(page => { 
+    calcMinDepth(page);
+    out += processPage(page); 
+});
+
+/* Show unprocessed pages */
+unprocessedPages = [];
+for (let pagePath in allPagesByPath) {
+    if (!processedPages.contains(pagePath)) {
+        unprocessedPages.push(pagePath);
+    }
+}
+if (showUnprocessed && unprocessedPages.length > 0) {
+    out += "\n\n# Unlinked Pages\n\n";
+    for (const pagePath of unprocessedPages) {
+        page = allPagesByPath[pagePath];
+        if (page.file.path.startsWith("Archive/") ||
+            page.file.path.startsWith("Inbox/")) {
+            continue;
+        }
+        out += "- " + page.file.link + "\n";
+    }
+}
+
+/* All done */
+return out;
