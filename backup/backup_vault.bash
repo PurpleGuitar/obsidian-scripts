@@ -10,7 +10,6 @@
 # env VAULT_NAME=reference BACKUP_DIR=/home/craig/Dropbox/Craig/obsidian-reference-backup bash -c '/home/craig/Documents/Reference/Scripts/backup/backup_vault.bash'
 # ```
 
-
 # Parameter: Vault Name
 if [ -z "$VAULT_NAME" ]; then
     echo "Please set \$VAULT_NAME, e.g.:"
