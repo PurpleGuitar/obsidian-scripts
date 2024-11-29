@@ -247,3 +247,5 @@ if (showWarnings && warnings.length > 0) {
 
 /* All done */
 return lines.join("\n");
+
+// vim: set noswapfile :
