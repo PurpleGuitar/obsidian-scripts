@@ -51,6 +51,12 @@ if (input && "maxDepth" in input) {
     maxDepth = input.maxDepth;
 }
 
+/* INPUT: Pages to ignore */
+let ignorePages = [];
+if (input && "ignorePages" in input) {
+    ignorePages = input.ignorePages;
+}
+
 // IGNORE_DIRS = [
 //     "Inbox/"
 // ];
@@ -138,7 +144,8 @@ pages.forEach(page => {
     } else {
 
         /* Remember pages that don't have any topics. */
-        if (page.file.path != startPagePath) {
+        if (page.file.path != startPagePath &&
+            !(ignorePages.contains(page.file.path))) {
             warnings.push(`No topic field: ${page.file.link}`);
         }
 
@@ -166,6 +173,11 @@ function writeTopics(page, depth) {
         // Show topics but not leaves, but subtopics present
         (showTopics && !showLeaves && hasSubtopics)
     );
+
+    /* Ignore requested pages */
+    if (page.file.path in ignorePages) {
+        writePage = false;
+    }
 
     let summary = "";
     if (showSummaries && page.summary) {
@@ -243,7 +255,8 @@ writeTopics(startPage, 0);
 
 /* Calculate unreachable pages */
 for (let page of pages) {
-    if (!reachableFromHome.includes(page.file.path)) {
+    if (!reachableFromHome.includes(page.file.path) && 
+        !(ignorePages.contains(page.file.path))) {
         warnings.push(`Unreachable: ${page.file.link}`);
     }
 }
