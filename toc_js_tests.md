@@ -1,5 +1,7 @@
 See also: [[DataviewJS - Create a filtered Table of Contents]]
 
+This page demonstrates the capabilities of `toc.js`, and serves as a set of unit tests.
+
 # Basic Outlines
 
 ## Full Outline of This Page
@@ -7,7 +9,7 @@ See also: [[DataviewJS - Create a filtered Table of Contents]]
 Called with no `input` parameter. This should exactly match what Obsidian displays in the Outline plugin.
 
 ```dataviewjs
-dv.view("Scripts/filtered_toc");
+dv.view("Scripts/toc");
 ```
 
 ## Full Outline of a Different Page
@@ -15,30 +17,30 @@ dv.view("Scripts/filtered_toc");
 See: [[DataviewJS - Create a filtered Table of Contents]]
 
 ```dataviewjs
-dv.view("Scripts/filtered_toc", {
+dv.view("Scripts/toc", {
     // Note the double set of quotes and fully qualified path:
     // '"Folder/Page Name"'
-    from: '"Notes/DJS - Create a filtered Table of Contents"'
+    from: '"Notes/DataviewJS - Create a filtered Table of Contents"'
 });
 ```
 
 ## Outlines from All Pages in a Directory
 
-Headers from pages in the Vault directory. When multiple pages are present, they appear at the root level, and H1s are under them.
+Headers from pages in the Scripts directory. When multiple pages are present, they appear at the root level, and H1s are under them.
 
 #### Without paths
 
 ```dataviewjs
-dv.view("Scripts/filtered_toc", {
-    from: '"Vault"',
+dv.view("Scripts/toc", {
+    from: '"Scripts"',
 });
 ```
 
 #### With paths
 
 ```dataviewjs
-dv.view("Scripts/filtered_toc", {
-    from: '"Vault"',
+dv.view("Scripts/toc", {
+    from: '"Scripts"',
     showFilePath: true
 });
 ```
@@ -50,7 +52,7 @@ dv.view("Scripts/filtered_toc", {
 Filter for 'A', not case sensitive:
 
 ```dataviewjs
-dv.view("Scripts/filtered_toc", {
+dv.view("Scripts/toc", {
     regex: "A"
 });
 ```
@@ -60,7 +62,7 @@ dv.view("Scripts/filtered_toc", {
 Filter for 'A', case sensitive:
 
 ```dataviewjs
-dv.view("Scripts/filtered_toc", {
+dv.view("Scripts/toc", {
     regex: "A",
     caseSensitive: true,
 });
@@ -71,7 +73,7 @@ dv.view("Scripts/filtered_toc", {
 Show headings in which contents match too. For example, searching content for "watermelon" will show this section, even though the heading does not contain the term.
 
 ```dataviewjs
-dv.view("Scripts/filtered_toc", {
+dv.view("Scripts/toc", {
     regex: "watermelon",
     searchContent: true,
 });
@@ -83,7 +85,7 @@ Show matching contents under headings. For example, searching content for "rutab
 
 
 ```dataviewjs
-dv.view("Scripts/filtered_toc", {
+dv.view("Scripts/toc", {
     regex: "ruta" + "baga", //fancy footwork to avoid matching this query
     searchContent: true,
     showContent: true
@@ -101,7 +103,7 @@ Tip: If you find your search matching the query itself, you can work around that
 The tree below should be blank:
 
 ```dataviewjs
-dv.view("Scripts/filtered_toc", {
+dv.view("Scripts/toc", {
     regex: "This is inside a code block"
 });
 ```
@@ -113,7 +115,7 @@ dv.view("Scripts/filtered_toc", {
 Max heading level 1:
 
 ```dataviewjs
-dv.view("Scripts/filtered_toc", {
+dv.view("Scripts/toc", {
     maxLevel: 1
 });
 ```
@@ -123,7 +125,7 @@ dv.view("Scripts/filtered_toc", {
 See debug output:
 
 ```dataviewjs
-dv.view("Scripts/filtered_toc", {
+dv.view("Scripts/toc", {
     debug: true
 });
 ```
