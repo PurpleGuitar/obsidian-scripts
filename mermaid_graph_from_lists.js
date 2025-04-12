@@ -42,7 +42,7 @@ for (const item of lists) {
 		continue;
 	}
 	let hash = "n" + djb2Hash(item.text).padStart(8, "0");
-	let section = item.section.subpath;
+	let section = item.section.subpath || page.file.name;
 	let node = {
 		"hash": hash,
 		"section": section,
