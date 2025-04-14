@@ -12,13 +12,13 @@ let item_filter = ".*";
 
 /* Colors for node branches. */
 let branch_colors = [
-    "#efe", // green
-    "#eff", // cyan
     "#eef", // blue
-    "#fef", // purple
-    "#fee", // red
-    "#fed", // orange
+    "#eff", // cyan
+    "#efe", // green
     "#ffe", // yellow
+    "#fed", // orange
+    "#fee", // red
+    "#fef", // purple
 ];
 
 /* Process input parameters, if any */
