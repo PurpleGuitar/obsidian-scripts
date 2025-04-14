@@ -24,15 +24,21 @@ let branch_colors = [
 /* Process input parameters, if any */
 if (input) {
 
-    if ("item_filter" in input) {
+    /* Item filter */
+    if ("item_filter" in input && typeof input.item_filter === "string") {
         item_filter = input.item_filter;
     }
+
+    /* Branch colors */
     if ("branch_colors" in input) {
-        branch_colors = input.branch_colors;
+        if (Array.isArray(input.branch_colors) && 
+            input.branch_colors.every(color => typeof color === "string")) {
+            branch_colors = input.branch_colors;
+        } else {
+            console.warn("Invalid branch_colors input. Using default colors.");
+        }
     }
-
 }
-
 
 /**
  * Generates a hash for a given string using the DJB2 algorithm.
@@ -70,7 +76,7 @@ for (const item of lists) {
 		"section": section,
 		"text": item.text
 	};
-	if (node.text.contains('"')) {
+	if (node.text.includes('"')) {
     	node.text = node.text.replaceAll('"', "'");
 	}
 	nodes.push(node);
@@ -98,10 +104,7 @@ for (const section in nodes_by_section_name) {
         output += `    style ${node.hash} stroke:#000,fill:${branch_colors[branch_color]}\n`
         previous_hash = node.hash;
     }
-    branch_color += 1;
-    if (branch_color >= branch_colors.length) {
-        branch_color = 0;
-    }
+    branch_color = (branch_color + 1) % branch_colors.length;
 }
 output += "```\n\n"
 
