@@ -11,6 +11,11 @@
 let whitelist = [/.*/]; // Default: include all items
 let blacklist = []; // Default: exclude no items
 
+/* Arrays of regular expressions to filter sections. 
+ * Sections must match at least one regex in the section_whitelist and none in the section_blacklist to be included. */
+let section_whitelist = [/.*/]; // Default: include all sections
+let section_blacklist = []; // Default: exclude no sections
+
 /* Colors for node branches */
 let branch_colors = [
     "#C8DFF0", // Muted blue
@@ -43,6 +48,16 @@ if (input) {
         } else {
             console.warn("Invalid branch_colors input. Using default colors.");
         }
+    }
+
+    /* Section whitelist */
+    if ("section_whitelist" in input && Array.isArray(input.section_whitelist)) {
+        section_whitelist = input.section_whitelist.map(regex => new RegExp(regex));
+    }
+
+    /* Section blacklist */
+    if ("section_blacklist" in input && Array.isArray(input.section_blacklist)) {
+        section_blacklist = input.section_blacklist.map(regex => new RegExp(regex));
     }
 }
 
@@ -118,6 +133,16 @@ let branch_color = 0;
 output += "graph TD\n"
 
 for (const section in nodes_by_section_name) {
+
+    // Check if the section matches at least one regex in the section_whitelist
+    let is_section_whitelisted = section_whitelist.some(regex => regex.test(section));
+    // Check if the section matches any regex in the section_blacklist
+    let is_section_blacklisted = section_blacklist.some(regex => regex.test(section));
+
+    // Skip sections that are not whitelisted or are blacklisted
+    if (!is_section_whitelisted || is_section_blacklisted) {
+        continue;
+    }
 
     /* Generate section hash */
     let section_hash = "s" + djb2Hash(section);
