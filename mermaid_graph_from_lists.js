@@ -90,6 +90,9 @@ for (const item of lists) {
  * separate branch in the graph.  The nodes are connected in the order they
  * appear in the list.  If two nodes have the same text, they are treated as the
  * same node, allowing branches to connect to each other. */
+const STROKE_COLOR = "#000"; // Default stroke color
+const TODO_FILL_COLOR = "#ffffaa"; // Yellow for TODO items
+const TODO_STROKE_COLOR = "#ff0000"; // Red for TODO items
 let output = "\n\n```mermaid\n";
 let branch_color = 0;
 output += "graph TD\n"
@@ -99,9 +102,21 @@ for (const section in nodes_by_section_name) {
     output += `\n  ${section_hash}["**${section}**"]\n`;
     output += `    style ${section_hash} stroke:#000,stroke-width:3px,fill:${branch_colors[branch_color]}\n`
     for (const node of nodes_by_section_name[section]) {
+
+        /* Write node */
         output += `    ${node.hash}["${node.text}"]\n`;
+
+        /* Write node style */
+        let stroke_color = STROKE_COLOR;
+        let fill_color = branch_colors[branch_color];
+        if (node.text.includes("TODO")) {
+            fill_color = TODO_FILL_COLOR;
+            stroke_color = TODO_STROKE_COLOR
+        }
+        output += `    style ${node.hash} stroke:${stroke_color},fill:${fill_color}\n`;
+
+        /* Write edge */
         output += `    ${previous_hash} --> ${node.hash}\n`;
-        output += `    style ${node.hash} stroke:#000,fill:${branch_colors[branch_color]}\n`
         previous_hash = node.hash;
     }
     branch_color = (branch_color + 1) % branch_colors.length;
