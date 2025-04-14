@@ -6,15 +6,15 @@
  * connect to each other.
  */
 
-/* Arrays of regular expressions to filter list items. 
- * Items must match at least one regex in the node_whitelist and none in the node_blacklist to be included. */
-let node_whitelist = [/.*/]; // Default: include all items
-let node_blacklist = []; // Default: exclude no items
-
 /* Arrays of regular expressions to filter sections. 
  * Sections must match at least one regex in the section_whitelist and none in the section_blacklist to be included. */
 let section_whitelist = [/.*/]; // Default: include all sections
 let section_blacklist = []; // Default: exclude no sections
+
+/* Arrays of regular expressions to filter list items. 
+ * Items must match at least one regex in the node_whitelist and none in the node_blacklist to be included. */
+let node_whitelist = [/.*/]; // Default: include all items
+let node_blacklist = []; // Default: exclude no items
 
 /* Colors for node branches */
 let branch_colors = [
@@ -29,6 +29,16 @@ let branch_colors = [
 
 /* Process input parameters, if any */
 if (input) {
+
+    /* Section whitelist */
+    if ("section_whitelist" in input && Array.isArray(input.section_whitelist)) {
+        section_whitelist = input.section_whitelist.map(regex => new RegExp(regex));
+    }
+
+    /* Section blacklist */
+    if ("section_blacklist" in input && Array.isArray(input.section_blacklist)) {
+        section_blacklist = input.section_blacklist.map(regex => new RegExp(regex));
+    }
 
     /* Node whitelist */
     if ("node_whitelist" in input && Array.isArray(input.node_whitelist)) {
@@ -48,16 +58,6 @@ if (input) {
         } else {
             console.warn("Invalid branch_colors input. Using default colors.");
         }
-    }
-
-    /* Section whitelist */
-    if ("section_whitelist" in input && Array.isArray(input.section_whitelist)) {
-        section_whitelist = input.section_whitelist.map(regex => new RegExp(regex));
-    }
-
-    /* Section blacklist */
-    if ("section_blacklist" in input && Array.isArray(input.section_blacklist)) {
-        section_blacklist = input.section_blacklist.map(regex => new RegExp(regex));
     }
 }
 
