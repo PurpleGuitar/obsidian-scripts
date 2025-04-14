@@ -10,15 +10,15 @@
  * matches this regex will be in the graph. */
 let item_filter = ".*";
 
-/* Colors for node branches. */
+/* Colors for node branches */
 let branch_colors = [
-    "#eef", // blue
-    "#eff", // cyan
-    "#efe", // green
-    "#ffe", // yellow
-    "#fed", // orange
-    "#fee", // red
-    "#fef", // purple
+    "#C8DFF0", // Muted blue
+    "#F9C6B8", // Coral red
+    "#BFE8E0", // Deep green
+    "#FAEBA2", // Soft yellow
+    "#DAB9C3", // Dusty rose
+    "#DFF6F5", // Soft teal
+    "#FAD9C3", // Warm orange
 ];
 
 /* Process input parameters, if any */
