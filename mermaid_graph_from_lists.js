@@ -7,9 +7,9 @@
  */
 
 /* Arrays of regular expressions to filter list items. 
- * Items must match at least one regex in the whitelist and none in the blacklist to be included. */
-let whitelist = [/.*/]; // Default: include all items
-let blacklist = []; // Default: exclude no items
+ * Items must match at least one regex in the node_whitelist and none in the node_blacklist to be included. */
+let node_whitelist = [/.*/]; // Default: include all items
+let node_blacklist = []; // Default: exclude no items
 
 /* Arrays of regular expressions to filter sections. 
  * Sections must match at least one regex in the section_whitelist and none in the section_blacklist to be included. */
@@ -30,14 +30,14 @@ let branch_colors = [
 /* Process input parameters, if any */
 if (input) {
 
-    /* Whitelist */
-    if ("whitelist" in input && Array.isArray(input.whitelist)) {
-        whitelist = input.whitelist.map(regex => new RegExp(regex));
+    /* Node whitelist */
+    if ("node_whitelist" in input && Array.isArray(input.node_whitelist)) {
+        node_whitelist = input.node_whitelist.map(regex => new RegExp(regex));
     }
 
-    /* Blacklist */
-    if ("blacklist" in input && Array.isArray(input.blacklist)) {
-        blacklist = input.blacklist.map(regex => new RegExp(regex));
+    /* Node blacklist */
+    if ("node_blacklist" in input && Array.isArray(input.node_blacklist)) {
+        node_blacklist = input.node_blacklist.map(regex => new RegExp(regex));
     }
 
     /* Branch colors */
@@ -87,10 +87,10 @@ let page = dv.current();
 let lists = page.file.lists;
 for (const item of lists) {
 
-    // Check if the item matches at least one regex in the whitelist
-    let is_whitelisted = whitelist.some(regex => regex.test(item.text));
-    // Check if the item matches any regex in the blacklist
-    let is_blacklisted = blacklist.some(regex => regex.test(item.text));
+    // Check if the item matches at least one regex in the node_whitelist
+    let is_whitelisted = node_whitelist.some(regex => regex.test(item.text));
+    // Check if the item matches any regex in the node_blacklist
+    let is_blacklisted = node_blacklist.some(regex => regex.test(item.text));
 
     // Skip items that are not whitelisted or are blacklisted
     if (!is_whitelisted || is_blacklisted) {
