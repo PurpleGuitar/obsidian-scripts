@@ -6,9 +6,10 @@
  * connect to each other.
  */
 
-/* Regular expression to filter list items.  Only list items whose text
- * matches this regex will be in the graph. */
-let item_filter = ".*";
+/* Arrays of regular expressions to filter list items. 
+ * Items must match at least one regex in the whitelist and none in the blacklist to be included. */
+let whitelist = [/.*/]; // Default: include all items
+let blacklist = []; // Default: exclude no items
 
 /* Colors for node branches */
 let branch_colors = [
@@ -24,9 +25,14 @@ let branch_colors = [
 /* Process input parameters, if any */
 if (input) {
 
-    /* Item filter */
-    if ("item_filter" in input && typeof input.item_filter === "string") {
-        item_filter = input.item_filter;
+    /* Whitelist */
+    if ("whitelist" in input && Array.isArray(input.whitelist)) {
+        whitelist = input.whitelist.map(regex => new RegExp(regex));
+    }
+
+    /* Blacklist */
+    if ("blacklist" in input && Array.isArray(input.blacklist)) {
+        blacklist = input.blacklist.map(regex => new RegExp(regex));
     }
 
     /* Branch colors */
@@ -66,11 +72,15 @@ let page = dv.current();
 let lists = page.file.lists;
 for (const item of lists) {
 
-    /* Skip items that don't match the filter */
-	let match = item.text.match(item_filter);
-	if (!match) {
-		continue;
-	}
+    // Check if the item matches at least one regex in the whitelist
+    let is_whitelisted = whitelist.some(regex => regex.test(item.text));
+    // Check if the item matches any regex in the blacklist
+    let is_blacklisted = blacklist.some(regex => regex.test(item.text));
+
+    // Skip items that are not whitelisted or are blacklisted
+    if (!is_whitelisted || is_blacklisted) {
+        continue;
+    }
 
     /* Create node for the item */
 	let hash = "n" + djb2Hash(item.text).padStart(8, "0");
@@ -82,9 +92,10 @@ for (const item of lists) {
 	};
 
     /* Clean up characters that would break the mermaid graph */
-	if (node.text.includes('"')) {
-    	node.text = node.text.replaceAll('"', "'");
-	}
+    node.text = node.text.replaceAll("\"", "\\\"");
+    node.text = node.text.replaceAll(":", "\\:");
+    node.text = node.text.replaceAll("[", "\\[");
+    node.text = node.text.replaceAll("]", "\\]");
 
     /* Add the node to the lists of nodes */
 	if (!(node.section in nodes_by_section_name)) {
