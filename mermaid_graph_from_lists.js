@@ -2,19 +2,10 @@
 
 /* Regular expression to filter list items.  Only list items whose text
  * matches this regex will be in the graph. */
-let item_filter_regex = ".*";
-
-/* Process input parameters, if any */
-if (input) {
-
-    if ("item_filter" in input) {
-        item_filter_regex = input.item_filter;
-    }
-
-}
+let item_filter = ".*";
 
 /* Colors for node branches. */
-const NODE_COLORS = [
+let branch_colors = [
     "#efe", // green
     "#eff", // cyan
     "#eef", // blue
@@ -22,7 +13,20 @@ const NODE_COLORS = [
     "#fee", // red
     "#fed", // orange
     "#ffe", // yellow
-]
+];
+
+/* Process input parameters, if any */
+if (input) {
+
+    if ("item_filter" in input) {
+        item_filter = input.item_filter;
+    }
+    if ("branch_colors" in input) {
+        branch_colors = input.branch_colors;
+    }
+
+}
+
 
 /**
  * Generates a hash for a given string using the DJB2 algorithm.
@@ -48,7 +52,7 @@ let nodes_by_section_name = {};
 let page = dv.current();
 let lists = page.file.lists;
 for (const item of lists) {
-	let match = item.text.match(item_filter_regex);
+	let match = item.text.match(item_filter);
 	if (!match) {
 		continue;
 	}
@@ -76,15 +80,15 @@ for (const section in nodes_by_section_name) {
     let section_hash = "s" + djb2Hash(section);
     let previous_hash = section_hash;
     output += `\n  ${section_hash}["${section}"]\n`;
-    output += `    style ${section_hash} fill:${NODE_COLORS[node_color]},stroke-width:3px\n`
+    output += `    style ${section_hash} fill:${branch_colors[node_color]},stroke-width:3px\n`
     for (const node of nodes_by_section_name[section]) {
         output += `    ${node.hash}["${node.text}"]\n`;
         output += `    ${previous_hash} --> ${node.hash}\n`;
-        output += `    style ${node.hash} fill: ${NODE_COLORS[node_color]}\n`
+        output += `    style ${node.hash} fill: ${branch_colors[node_color]}\n`
         previous_hash = node.hash;
     }
     node_color += 1;
-    if (node_color >= NODE_COLORS.length) {
+    if (node_color >= branch_colors.length) {
         node_color = 0;
     }
 }
