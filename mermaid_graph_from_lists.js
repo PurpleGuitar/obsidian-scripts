@@ -1,9 +1,10 @@
 //console.log("==== NEW RUN ====");
 
-// Optionally filter items
-// e.g. Starts with year: /^(\d{4}): (.+)/ 
+/* Regular expression to filter list items.  Only list items whose text
+ * matches this regex will be in the graph. */
 let item_filter_regex = ".*";
 
+/* Process input parameters, if any */
 if (input) {
 
     if ("item_filter" in input) {
@@ -12,17 +13,27 @@ if (input) {
 
 }
 
-// Node colors.
+/* Colors for node branches. */
 const NODE_COLORS = [
-    "#eef", // blue
-    "#fed", // orange
-    "#ffe", // yellow
-    "#fee", // red
     "#efe", // green
     "#eff", // cyan
+    "#eef", // blue
     "#fef", // purple
+    "#fee", // red
+    "#fed", // orange
+    "#ffe", // yellow
 ]
 
+/**
+ * Generates a hash for a given string using the DJB2 algorithm.
+ *
+ * The DJB2 algorithm is a simple and fast hashing function designed by Daniel J. Bernstein.
+ * It starts with an initial hash of 5381 and for each character, multiplies the hash by 33
+ * and adds the character's ASCII code. The result is returned as an unsigned 32-bit hex string.
+ *
+ * @param {string} str - The input string to hash.
+ * @returns {string} A hexadecimal string representing the unsigned 32-bit DJB2 hash of the input.
+ */
 function djb2Hash(str) {
   let hash = 5381;
   for (let i = 0; i < str.length; i++) {
