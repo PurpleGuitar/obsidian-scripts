@@ -60,15 +60,19 @@ function djb2Hash(str) {
 
 /* Organize the list items into sections and generate hashes for each item.  The
  * hash is used to create a unique identifier for each node in the graph. */
-let nodes = [];
+
 let nodes_by_section_name = {};
 let page = dv.current();
 let lists = page.file.lists;
 for (const item of lists) {
+
+    /* Skip items that don't match the filter */
 	let match = item.text.match(item_filter);
 	if (!match) {
 		continue;
 	}
+
+    /* Create node for the item */
 	let hash = "n" + djb2Hash(item.text).padStart(8, "0");
 	let section = item.section.subpath || page.file.name;
 	let node = {
@@ -76,11 +80,15 @@ for (const item of lists) {
 		"section": section,
 		"text": item.text
 	};
+
+    /* Clean up characters that would break the mermaid graph */
 	if (node.text.includes('"')) {
     	node.text = node.text.replaceAll('"', "'");
 	}
-	nodes.push(node);
+
+    /* Add the node to the lists of nodes */
 	if (!(node.section in nodes_by_section_name)) {
+        /* Create section if it doesn't exist */
     	nodes_by_section_name[node.section] = []
 	}
 	nodes_by_section_name[node.section].push(node);
@@ -90,15 +98,21 @@ for (const item of lists) {
  * separate branch in the graph.  The nodes are connected in the order they
  * appear in the list.  If two nodes have the same text, they are treated as the
  * same node, allowing branches to connect to each other. */
+
 const STROKE_COLOR = "#000"; // Default stroke color
 const TODO_FILL_COLOR = "#ffffaa"; // Yellow for TODO items
 const TODO_STROKE_COLOR = "#ff0000"; // Red for TODO items
 let output = "\n\n```mermaid\n";
 let branch_color = 0;
 output += "graph TD\n"
+
 for (const section in nodes_by_section_name) {
+
+    /* Generate section hash */
     let section_hash = "s" + djb2Hash(section);
-    let previous_hash = section_hash;
+    let previous_section_hash = section_hash;
+
+    /* Write section header */
     output += `\n  ${section_hash}["**${section}**"]\n`;
     output += `    style ${section_hash} stroke:#000,stroke-width:3px,fill:${branch_colors[branch_color]}\n`
     for (const node of nodes_by_section_name[section]) {
@@ -116,12 +130,15 @@ for (const section in nodes_by_section_name) {
         output += `    style ${node.hash} stroke:${stroke_color},fill:${fill_color}\n`;
 
         /* Write edge */
-        output += `    ${previous_hash} --> ${node.hash}\n`;
-        previous_hash = node.hash;
+        output += `    ${previous_section_hash} --> ${node.hash}\n`;
+        previous_section_hash = node.hash;
     }
+
+    /* Rotate branch color */
     branch_color = (branch_color + 1) % branch_colors.length;
 }
 output += "```\n\n"
 
 /* Output the graph.  The graph is displayed as a mermaid diagram in Obsidian. */
+
 dv.paragraph(output);
