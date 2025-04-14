@@ -79,12 +79,12 @@ output += "graph TD\n"
 for (const section in nodes_by_section_name) {
     let section_hash = "s" + djb2Hash(section);
     let previous_hash = section_hash;
-    output += `\n  ${section_hash}["${section}"]\n`;
-    output += `    style ${section_hash} fill:${branch_colors[node_color]},stroke-width:3px\n`
+    output += `\n  ${section_hash}["**${section}**"]\n`;
+    output += `    style ${section_hash} stroke:#000,stroke-width:3px,fill:${branch_colors[node_color]}\n`
     for (const node of nodes_by_section_name[section]) {
         output += `    ${node.hash}["${node.text}"]\n`;
         output += `    ${previous_hash} --> ${node.hash}\n`;
-        output += `    style ${node.hash} fill: ${branch_colors[node_color]}\n`
+        output += `    style ${node.hash} stroke:#000,fill:${branch_colors[node_color]}\n`
         previous_hash = node.hash;
     }
     node_color += 1;
