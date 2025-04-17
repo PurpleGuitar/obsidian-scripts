@@ -125,9 +125,12 @@ for (const item of lists) {
  * appear in the list.  If two nodes have the same text, they are treated as the
  * same node, allowing branches to connect to each other. */
 
+const STROKE_WIDTH = "1px"; // Default stroke width
 const STROKE_COLOR = "#000"; // Default stroke color
+const FONT_COLOR = "#000"; // Default stroke color
 const TODO_STROKE_COLOR = "#ff0000"; // Red for TODO items
 const TODO_STROKE_WIDTH = "3px"; // Stroke width for TODO items
+const TODO_FONT_COLOR = "#600"; // Dark red font for TODO items
 //const TODO_FILL_COLOR = "#ffffaa"; // Yellow for TODO items
 let output = "\n\n```mermaid\n";
 let branch_color = 0;
@@ -147,7 +150,7 @@ for (const section in nodes_by_section_name) {
 
     /* Generate section hash */
     let section_hash = "s" + djb2Hash(section);
-    let previous_section_hash = section_hash;
+    let previous_node_hash = section_hash;
 
     /* Write section header */
     output += `\n  ${section_hash}["**${section}**"]\n`;
@@ -161,16 +164,18 @@ for (const section in nodes_by_section_name) {
         let stroke_width ="1px";
         let stroke_color = STROKE_COLOR;
         let fill_color = branch_colors[branch_color];
+        let font_color = FONT_COLOR;
         if (node.text.includes("TODO")) {
-            // fill_color = TODO_FILL_COLOR;
             stroke_color = TODO_STROKE_COLOR
             stroke_width = TODO_STROKE_WIDTH;
+            // fill_color = TODO_FILL_COLOR;
+            font_color = TODO_FONT_COLOR;
         }
-        output += `    style ${node.hash} stroke:${stroke_color},stroke-width:${stroke_width},fill:${fill_color}\n`;
+        output += `    style ${node.hash} stroke:${stroke_color},stroke-width:${stroke_width},fill:${fill_color},color:${font_color}\n`;
 
         /* Write edge */
-        output += `    ${previous_section_hash} --> ${node.hash}\n`;
-        previous_section_hash = node.hash;
+        output += `    ${previous_node_hash} --> ${node.hash}\n`;
+        previous_node_hash = node.hash;
     }
 
     /* Rotate branch color */
