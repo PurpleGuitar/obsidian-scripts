@@ -6,13 +6,14 @@
  * connect to each other.
  */
 
-/* Arrays of regular expressions to filter sections. 
- * Sections must match at least one regex in the section_whitelist and none in the section_blacklist to be included. */
+/* Arrays of regular expressions to filter sections.  Sections must match at
+ * least one regex in the section_whitelist and none in the section_blacklist to
+ * be included. */
 let section_whitelist = [/.*/]; // Default: include all sections
 let section_blacklist = []; // Default: exclude no sections
 
-/* Arrays of regular expressions to filter list items. 
- * Items must match at least one regex in the node_whitelist and none in the node_blacklist to be included. */
+/* Arrays of regular expressions to filter list items.  Items must match at least
+ * one regex in the node_whitelist and none in the node_blacklist to be included. */
 let node_whitelist = [/.*/]; // Default: include all items
 let node_blacklist = []; // Default: exclude no items
 
@@ -79,6 +80,21 @@ function djb2Hash(str) {
   return (hash >>> 0).toString(16); // Unsigned 32-bit hex string
 }
 
+/**
+ * Encodes a text string to escape characters that would break a Mermaid graph.
+ *
+ * @param {string} text - The input text to encode.
+ * @returns {string} The encoded text.
+ */
+function encodeForMermaid(text) {
+    return text
+        .replaceAll("\"", "\\\"")
+        .replaceAll("\'", "\\\'")
+        .replaceAll(":", "\\:")
+        .replaceAll("[", "\\[")
+        .replaceAll("]", "\\]");
+}
+
 /* Organize the list items into sections and generate hashes for each item.  The
  * hash is used to create a unique identifier for each node in the graph. */
 
@@ -107,10 +123,8 @@ for (const item of lists) {
 	};
 
     /* Clean up characters that would break the mermaid graph */
-    node.text = node.text.replaceAll("\"", "\\\"");
-    node.text = node.text.replaceAll(":", "\\:");
-    node.text = node.text.replaceAll("[", "\\[");
-    node.text = node.text.replaceAll("]", "\\]");
+    node.section = encodeForMermaid(section);
+    node.text = encodeForMermaid(node.text);
 
     /* Add the node to the lists of nodes */
 	if (!(node.section in nodes_by_section_name)) {
@@ -133,6 +147,16 @@ const TODO_STROKE_WIDTH = "3px"; // Stroke width for TODO items
 const TODO_FONT_COLOR = "#600"; // Dark red font for TODO items
 //const TODO_FILL_COLOR = "#ffffaa"; // Yellow for TODO items
 let output = "\n\n```mermaid\n";
+output += `
+%%{
+	init: {
+		"flowchart": {
+			"curve": "linear",
+			"wrappingWidth": 300
+		}
+	}
+}%%
+`
 let branch_color = 0;
 output += "graph TD\n"
 
