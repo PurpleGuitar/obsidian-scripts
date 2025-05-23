@@ -1,4 +1,4 @@
-See also: [[DataviewJS - Create a filtered Table of Contents]]
+See also: [[toc_js_readme]]
 
 This page demonstrates the capabilities of `toc.js`, and serves as a set of unit tests.
 
@@ -14,7 +14,7 @@ dv.view("Scripts/toc");
 
 ## Full Outline of a Different Page
 
-See: [[DataviewJS - Create a filtered Table of Contents]]
+See: [[toc_js_readme]]
 
 ```dataviewjs
 dv.view("Scripts/toc", {

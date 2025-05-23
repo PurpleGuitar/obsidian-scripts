@@ -2,9 +2,11 @@
 
 # # To Install
 #
-# Make sure to set the `VAULT_NAME` variable in the script for this vault, e.g. "reference" or "personal".
+# Make sure to set the `VAULT_NAME` variable in the script for this vault,
+# e.g. "reference" or "personal".
 #
-# To run it on start, create a new Startup Applications entry for it and use a command line like the following:
+# To run it on start, create a new Startup Applications entry for it and
+# use a command line like the following:
 #
 # ```bash
 # env VAULT_NAME=reference BACKUP_DIR=/home/craig/Dropbox/Craig/obsidian-reference-backup bash -c '/home/craig/Documents/Reference/Scripts/backup/backup_vault.bash'

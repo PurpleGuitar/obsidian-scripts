@@ -99,6 +99,7 @@ function encodeForMermaid(text) {
  * hash is used to create a unique identifier for each node in the graph. */
 
 let nodes_by_section_name = {};
+
 let page = dv.current();
 let lists = page.file.lists;
 for (const item of lists) {
