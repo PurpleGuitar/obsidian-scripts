@@ -20,7 +20,7 @@ See: [[toc_js_readme]]
 dv.view("Scripts/toc", {
     // Note the double set of quotes and fully qualified path:
     // '"Folder/Page Name"'
-    from: '"Notes/DataviewJS - Create a filtered Table of Contents"'
+    from: '"Scripts/toc_js_readme"'
 });
 ```
 
