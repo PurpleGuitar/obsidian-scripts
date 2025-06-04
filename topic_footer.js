@@ -1,39 +1,37 @@
 // Get current page
 const current = dv.current();
 
-// Get incoming links
-const inlinks = dv.pages("[[]]").sort();
+// Get incoming links not already linked from this page
+const inlinks = dv.pages("[[]] AND !outgoing([[]])").sort(page => page.file.name);
 
-// Get list of topic child pages
-// i.e. pages that link to the current page via their topics field
-const topicChildren = inlinks.filter(page => {
-    if (page.topics && Array.isArray(page.topics)) {
-        return page.topics.some(topic => {
-            return topic.path == current.file.path;
-        });
-    }
-    return false;
+// Get subtopics
+const subtopics = inlinks.filter(childPage =>{
+    return childPage.topics && 
+           Array.isArray(childPage.topics) && 
+           childPage.topics.some(topic => topic.path == current.file.path);
 });
 
-// Get list of topic children not already linked from this page
-const unlinkedTopicChildren = topicChildren.filter(page => {
-    return !current.file.outlinks.includes(page.file.link);
+// Get backlinks (that is, non-subtopic links)
+const backlinks = inlinks.filter(childPage =>{
+    return subtopics.includes(childPage) === false;
 });
 
-// If there are any unlinked topic children, display them
-if (unlinkedTopicChildren.length > 0) {
-    dv.header(1, "Notes for this Topic");
-    dv.list(unlinkedTopicChildren.file.link);
+// Display subtopics, if any
+if (subtopics.length > 0) {
+    dv.header(1, "Subtopics");
+    dv.list(subtopics.file.link);
 }
 
-// Topics 
+// Display other links, if any
+if (backlinks.length > 0) {
+    dv.header(1, "Backlinks");
+    dv.list(backlinks.file.link);
+}
+
+// Display this page's topics
 dv.el("hr", "");
-if (current.topics && current.topics.length > 0) {
-    if (Array.isArray(current.topics)) {
-        dv.paragraph("Topics: " + current.topics.join(", "));
-    } else {
-    dv.paragraph("==Error: topics field is not an array.==");
-    }
+if (current.topics && Array.isArray(current.topics) && current.topics.length > 0) {
+    dv.paragraph("Topics: " + current.topics.join(", "));
 } else {
     dv.paragraph("*This page has no topics.*");
 }
