@@ -55,4 +55,9 @@ if (current.sources && Array.isArray(current.sources) && current.sources.length 
     output += "- Sources: " + current.sources.join(", ") + "\n";
 }
 
+// Display this page's see-alsos
+if (current.seealso && Array.isArray(current.seealso) && current.seealso.length > 0) {
+    output += "- See also: " + current.seealso.join(", ") + "\n";
+}
+
 dv.paragraph(output);
