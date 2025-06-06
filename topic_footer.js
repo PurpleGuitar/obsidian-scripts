@@ -43,8 +43,16 @@ if (journalEntries.length > 0) {
 
 // Display this page's topics
 dv.el("hr", "");
+var output = "";
 if (current.topics && Array.isArray(current.topics) && current.topics.length > 0) {
-    dv.paragraph("Topics: " + current.topics.join(", "));
+    output += "- Topics: " + current.topics.join(", ") + "\n";
 } else {
-    dv.paragraph("*This page has no topics.*");
+    output += "- *This page has no topics.*\n";
 }
+
+// Display this page's sources
+if (current.sources && Array.isArray(current.sources) && current.sources.length > 0) {
+    output += "- Sources: " + current.sources.join(", ") + "\n";
+}
+
+dv.paragraph(output);
