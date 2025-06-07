@@ -42,11 +42,11 @@ if (journalEntries.length > 0) {
 }
 
 // Helper function to print a sublist or single item
-function printListOrSingle(label, items, showMessageIfEmpty = false) {
+function printListOrSingle(label, items, pluralLabel, showMessageIfEmpty = false) {
     var output = "";
     if (items && Array.isArray(items) && items.length > 0) {
         if (items.length > 1) {
-            output += `- ${label}s:\n`;
+            output += `- ${pluralLabel}:\n`;
             items.forEach(item => {
                 output += "    - " + item + "\n";
             });
@@ -55,7 +55,7 @@ function printListOrSingle(label, items, showMessageIfEmpty = false) {
         }
     } else {
         if (showMessageIfEmpty) {
-            output += `- *This page has no ${label.toLowerCase()}s.*\n`;
+            output += `- *This page has no ${pluralLabel.toLowerCase()}.*\n`;
         }
     }
     return output;
@@ -64,8 +64,8 @@ function printListOrSingle(label, items, showMessageIfEmpty = false) {
 // Display this page's topics
 dv.el("hr", "");
 var output = "";
-output += printListOrSingle("Topic", current.topics, true);
-output += printListOrSingle("Source", current.sources);
-output += printListOrSingle("See also", current.seealso);
+output += printListOrSingle("Topic", current.topics, "Topics", true);
+output += printListOrSingle("Source", current.sources, "Sources");
+output += printListOrSingle("See also", current.seealso, "See also");
 
 dv.paragraph(output);
