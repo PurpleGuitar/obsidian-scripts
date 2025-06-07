@@ -65,7 +65,7 @@ function printListOrSingle(label, items, pluralLabel, showMessageIfEmpty = false
 dv.el("hr", "");
 var output = "";
 output += printListOrSingle("Topic", current.topics, "Topics", true);
-output += printListOrSingle("Source", current.sources, "Sources");
 output += printListOrSingle("See also", current.seealso, "See also");
+output += printListOrSingle("Source", current.sources, "Sources");
 
 dv.paragraph(output);
