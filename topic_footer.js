@@ -41,23 +41,31 @@ if (journalEntries.length > 0) {
     dv.list(journalEntries.file.link);
 }
 
+// Helper function to print a sublist or single item
+function printListOrSingle(label, items, showMessageIfEmpty = false) {
+    var output = "";
+    if (items && Array.isArray(items) && items.length > 0) {
+        if (items.length > 1) {
+            output += `- ${label}s:\n`;
+            items.forEach(item => {
+                output += "    - " + item + "\n";
+            });
+        } else {
+            output += `- ${label}: ` + items[0] + "\n";
+        }
+    } else {
+        if (showMessageIfEmpty) {
+            output += `- *This page has no ${label.toLowerCase()}s.*\n`;
+        }
+    }
+    return output;
+}
+
 // Display this page's topics
 dv.el("hr", "");
 var output = "";
-if (current.topics && Array.isArray(current.topics) && current.topics.length > 0) {
-    output += "- Topics: " + current.topics.join(", ") + "\n";
-} else {
-    output += "- *This page has no topics.*\n";
-}
-
-// Display this page's sources
-if (current.sources && Array.isArray(current.sources) && current.sources.length > 0) {
-    output += "- Sources: " + current.sources.join(", ") + "\n";
-}
-
-// Display this page's see-alsos
-if (current.seealso && Array.isArray(current.seealso) && current.seealso.length > 0) {
-    output += "- See also: " + current.seealso.join(", ") + "\n";
-}
+output += printListOrSingle("Topic", current.topics, true);
+output += printListOrSingle("Source", current.sources);
+output += printListOrSingle("See also", current.seealso);
 
 dv.paragraph(output);
