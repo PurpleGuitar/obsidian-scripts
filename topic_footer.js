@@ -25,7 +25,7 @@ const backlinks = inlinks.filter(childPage =>{
 
 // Display subtopics, if any
 if (subtopics.length > 0) {
-    dv.header(1, "Subtopics");
+    dv.header(1, "Notes");
     dv.list(subtopics.file.link);
 }
 
