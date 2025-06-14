@@ -1,48 +1,19 @@
-// Get current page
-const current = dv.current();
 
-// Get incoming links not already linked from this page
-const inlinks = dv.pages("[[]] AND !outgoing([[]])").sort(page => page.file.name);
-
-// Get journal entries (backlinks that start with a year)
-const journalEntries = inlinks.filter(childPage =>{
-    return childPage.file.name.match(/^\d{4}/);
-}).sort(page => page.file.name, "desc");
-
-// Get subtopics (non-journal links that are topics of the current page)
-const subtopics = inlinks.filter(childPage =>{
-    return childPage.topics && 
-           Array.isArray(childPage.topics) && 
-           childPage.topics.some(topic => topic.path == current.file.path) &&
-           journalEntries.includes(childPage) === false;
-});
-
-// Get backlinks (non-subtopic, non-journal links)
-const backlinks = inlinks.filter(childPage =>{
-    return subtopics.includes(childPage) === false &&
-           journalEntries.includes(childPage) === false;
-});
-
-// Display subtopics, if any
-if (subtopics.length > 0) {
-    dv.header(1, "Notes");
-    dv.list(subtopics.file.link);
+// Helper function to print a section of links
+function printLinksSection(title, pages) {
+    if (pages.length > 0) {
+        dv.header(1, title);
+        dv.list(pages.map(page => {
+            if (page.summary) {
+                return page.file.link + ": " + page.summary;
+            }
+            return page.file.link;
+        }));
+    }
 }
 
-// Display backlinks, if any
-if (backlinks.length > 0) {
-    dv.header(1, "Backlinks");
-    dv.list(backlinks.file.link);
-}
-
-// Display journal entries, if any
-if (journalEntries.length > 0) {
-    dv.header(1, "Journal Entries");
-    dv.list(journalEntries.file.link);
-}
-
-// Helper function to print a sublist or single item
-function printListOrSingle(label, items, pluralLabel, showMessageIfEmpty = false) {
+// Helper function to print a sublist or single item in the footer
+function printFooterItem(label, items, pluralLabel, showMessageIfEmpty = false) {
     var output = "";
     if (items && Array.isArray(items) && items.length > 0) {
         if (items.length > 1) {
@@ -61,11 +32,48 @@ function printListOrSingle(label, items, pluralLabel, showMessageIfEmpty = false
     return output;
 }
 
-// Display this page's topics
+// Get current page
+const current = dv.current();
+
+// Get incoming links not already linked from this page
+const inlinks = dv.pages("[[]] AND !outgoing([[]])").sort(page => page.file.name);
+
+// Organize incoming links into buckets
+let topics = [];
+let notes = []
+let backlinks = [];
+let journalEntries = [];
+inlinks.forEach(inlink => {
+    if (inlink.file.path.startsWith("Journal/")) {
+        journalEntries.push(inlink);
+    } else if (inlink.topics &&
+               Array.isArray(inlink.topics) && 
+               inlink.topics.some(topic => topic.path == current.file.path)) {
+        // This inlink lists the current page as a topic; 
+        // it's either a subtopic or a note
+        if (inlink.file.path.startsWith("Topics/")) {
+            // It's in the Topics folder, so it's a subtopic
+            topics.push(inlink);
+        } else {
+            // Not a subtopic, so it's a note
+            notes.push(inlink);
+        }
+    } else {
+        // Not a journal entry, subnote, or topic, so it's a backlink
+        backlinks.push(inlink); 
+    }
+});
+
+// Write link sections
+printLinksSection("Topics", topics);
+printLinksSection("Notes", notes);
+printLinksSection("Backlinks", backlinks);
+printLinksSection("Journal Entries", journalEntries);
+
+// Display this page's metadata in the footer
 dv.el("hr", "");
 var output = "";
-output += printListOrSingle("Topic", current.topics, "Topics", true);
-output += printListOrSingle("See also", current.seealso, "See also");
-output += printListOrSingle("Source", current.sources, "Sources");
-
+output += printFooterItem("Topic", current.topics, "Topics", true);
+output += printFooterItem("See also", current.seealso, "See also");
+output += printFooterItem("Source", current.sources, "Sources");
 dv.paragraph(output);
