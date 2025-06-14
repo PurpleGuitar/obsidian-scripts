@@ -5,9 +5,12 @@ function printLinksSection(title, pages) {
         dv.header(1, title);
         dv.list(pages.map(page => {
             if (page.summary) {
+                // Page has a summary, include it in the link
                 return page.file.link + ": " + page.summary;
+            } else {
+                // No summary, just link to the page
+                return page.file.link;
             }
-            return page.file.link;
         }));
     }
 }
