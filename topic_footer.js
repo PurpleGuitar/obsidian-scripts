@@ -38,11 +38,13 @@ function printFooterItem(label, items, pluralLabel, showMessageIfEmpty = false) 
 }
 
 // Helper function to determine sort order of folders
-function folderSortKey(name) {
-  if (name === "Topics") return 0;
-  if (name === "Apps") return 1;
-  if (name.startsWith("Journal")) return 3;
-  return 2; // Other folders
+function folderSortKey(folderName) {
+  // Topics folder should be first
+  if (folderName === "Topics") return 0;
+  // Journal folders should be last
+  if (folderName.startsWith("Journal")) return 9;
+  // Otherwise just sort by name
+  return 5;
 }
 
 // Get current page
@@ -62,8 +64,15 @@ inlinks.forEach(inlink => {
 
 // Get list of folders sorted the way we want
 let inlinkFolders = Object.keys(inlinksByFolder).sort((a, b) => {
-    return folderSortKey(a) - folderSortKey(b);
-});  
+    let sortA = folderSortKey(a);
+    let sortB = folderSortKey(b);
+    if (sortA === sortB) {
+        // If both folders have the same sort key, sort by name
+        return a.localeCompare(b);
+    }
+    // Otherwise sort by the defined sort key
+    return sortA - sortB;
+});
 
 // Display incoming links organized by folder
 for (const folder of inlinkFolders) {
