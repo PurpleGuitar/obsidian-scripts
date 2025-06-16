@@ -1,6 +1,8 @@
 
 // Helper function to print a section of links
 function printLinksSection(title, pages) {
+    console.log(`Printing section: ${title}`);
+    console.log(`Number of pages: ${pages.length}`);
     if (pages.length > 0) {
         dv.header(1, title);
         dv.list(pages.map(page => {
@@ -35,43 +37,38 @@ function printFooterItem(label, items, pluralLabel, showMessageIfEmpty = false) 
     return output;
 }
 
+// Helper function to determine sort order of folders
+function folderSortKey(name) {
+  if (name === "Topics") return 0;
+  if (name === "Apps") return 1;
+  if (name.startsWith("Journal")) return 3;
+  return 2; // Other folders
+}
+
 // Get current page
 const current = dv.current();
 
 // Get incoming links not already linked from this page
 const inlinks = dv.pages("[[]] AND !outgoing([[]])").sort(page => page.file.name);
 
-// Organize incoming links into buckets
-let topics = [];
-let notes = []
-let backlinks = [];
-let journalEntries = [];
+// Organize incoming links by folder
+let inlinksByFolder = {};
 inlinks.forEach(inlink => {
-    if (inlink.file.path.startsWith("Journal/")) {
-        journalEntries.push(inlink);
-    } else if (inlink.topics &&
-               Array.isArray(inlink.topics) && 
-               inlink.topics.some(topic => topic.path == current.file.path)) {
-        // This inlink lists the current page as a topic; 
-        // it's either a subtopic or a note
-        if (inlink.file.path.startsWith("Topics/")) {
-            // It's in the Topics folder, so it's a subtopic
-            topics.push(inlink);
-        } else {
-            // Not a subtopic, so it's a note
-            notes.push(inlink);
-        }
-    } else {
-        // Not a journal entry, subnote, or topic, so it's a backlink
-        backlinks.push(inlink); 
+    if (inlinksByFolder[inlink.file.folder] === undefined) {
+        inlinksByFolder[inlink.file.folder] = [];
     }
+    inlinksByFolder[inlink.file.folder].push(inlink);
 });
 
-// Write link sections
-printLinksSection("Topics", topics);
-printLinksSection("Notes", notes);
-printLinksSection("Backlinks", backlinks);
-printLinksSection("Journal Entries", journalEntries);
+// Get list of folders sorted the way we want
+let inlinkFolders = Object.keys(inlinksByFolder).sort((a, b) => {
+    return folderSortKey(a) - folderSortKey(b);
+});  
+
+// Display incoming links organized by folder
+for (const folder of inlinkFolders) {
+    printLinksSection(folder, dv.array(inlinksByFolder[folder]));
+}
 
 // Display this page's metadata in the footer
 dv.el("hr", "");
