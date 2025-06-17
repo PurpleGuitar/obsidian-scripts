@@ -1,8 +1,6 @@
 
 // Helper function to print a section of links
 function printLinksSection(title, pages) {
-    console.log(`Printing section: ${title}`);
-    console.log(`Number of pages: ${pages.length}`);
     if (pages.length > 0) {
         dv.header(1, title);
         dv.list(pages.map(page => {
