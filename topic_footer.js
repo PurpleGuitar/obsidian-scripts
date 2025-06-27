@@ -1,4 +1,3 @@
-
 // Helper function to print a section of links
 function printLinksSection(title, pages) {
     if (pages.length > 0) {
@@ -35,14 +34,17 @@ function printFooterItem(label, items, pluralLabel, showMessageIfEmpty = false) 
     return output;
 }
 
-// Helper function to determine sort order of folders
-function folderSortKey(folderName) {
-  // Topics folder should be first
-  if (folderName === "Topics") return 0;
-  // Journal folders should be last
-  if (folderName.startsWith("Journal")) return 9;
-  // Everything else in the middle
-  return 5;
+// Helper function to determine sort order of folders.
+// "Topics" always first, "Journal" always last, everything else alphabetical.
+function folderSortKey(a, b) {
+    // "Topics" always first
+    if (a === "Topics") return -1;
+    if (b === "Topics") return 1;
+    // "Journal" always last
+    if (a === "Journal") return 1;
+    if (b === "Journal") return -1;
+    // For everything else, sort alphabetically
+    return a.localeCompare(b);
 }
 
 // Get current page
@@ -61,16 +63,7 @@ inlinks.forEach(inlink => {
 });
 
 // Get list of folders sorted the way we want
-let inlinkFolders = Object.keys(inlinksByFolder).sort((a, b) => {
-    let sortA = folderSortKey(a);
-    let sortB = folderSortKey(b);
-    if (sortA === sortB) {
-        // If both folders have the same sort key, sort by name
-        return a.localeCompare(b);
-    }
-    // Otherwise sort by the defined sort key
-    return sortA - sortB;
-});
+let inlinkFolders = Object.keys(inlinksByFolder).sort(folderSortKey);
 
 // Display incoming links organized by folder
 for (const folder of inlinkFolders) {
