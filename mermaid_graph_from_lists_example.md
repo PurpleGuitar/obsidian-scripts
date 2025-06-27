@@ -1,7 +1,8 @@
 
+
+
 ```dataviewjs
 dv.view("mermaid_graph_from_lists", {
-    section_blacklist: ["See Also"],
     branch_colors: [
         "#faf4ec", // Foamed Milk
         "#cbb4ad", // Light Espresso
@@ -9,6 +10,19 @@ dv.view("mermaid_graph_from_lists", {
     ]
 });
 ```
+
+
+````
+```dataviewjs
+dv.view("mermaid_graph_from_lists", {
+    branch_colors: [
+        "#faf4ec", // Foamed Milk
+        "#cbb4ad", // Light Espresso
+        "#e4cbb0", // Latte Cream
+    ]
+});
+```
+````
 
 The graph above was automatically generated from the lists below.
 
