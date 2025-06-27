@@ -21,45 +21,46 @@ let node_blacklist = []; // Default: exclude no items
 
 /* Colors for node branches */
 let branch_colors = [
-    '#C8DFF0', // Muted blue
-    '#F9C6B8', // Coral red
-    '#BFE8E0', // Deep green
-    '#FAEBA2', // Soft yellow
-    '#DAB9C3', // Dusty rose
-    '#DFF6F5', // Soft teal:%s
-    '#FAD9C3', // Warm orange
+    "#C8DFF0", // Muted blue
+    "#F9C6B8", // Coral red
+    "#BFE8E0", // Deep green
+    "#FAEBA2", // Soft yellow
+    "#DAB9C3", // Dusty rose
+    "#DFF6F5", // Soft teal:%s
+    "#FAD9C3", // Warm orange
 ];
 
 /* Process input parameters, if any */
 if (input) {
 
     /* Section whitelist */
-    if ('section_whitelist' in input && Array.isArray(input.section_whitelist)) {
+    if ("section_whitelist" in input && Array.isArray(input.section_whitelist)) {
         section_whitelist = input.section_whitelist.map(regex => new RegExp(regex));
     }
 
     /* Section blacklist */
-    if ('section_blacklist' in input && Array.isArray(input.section_blacklist)) {
+    if ("section_blacklist" in input && Array.isArray(input.section_blacklist)) {
         section_blacklist = input.section_blacklist.map(regex => new RegExp(regex));
     }
 
     /* Node whitelist */
-    if ('node_whitelist' in input && Array.isArray(input.node_whitelist)) {
+    if ("node_whitelist" in input && Array.isArray(input.node_whitelist)) {
         node_whitelist = input.node_whitelist.map(regex => new RegExp(regex));
     }
 
     /* Node blacklist */
-    if ('node_blacklist' in input && Array.isArray(input.node_blacklist)) {
+    if ("node_blacklist" in input && Array.isArray(input.node_blacklist)) {
         node_blacklist = input.node_blacklist.map(regex => new RegExp(regex));
     }
 
     /* Branch colors */
-    if ('branch_colors' in input) {
+    if ("branch_colors" in input) {
         if (Array.isArray(input.branch_colors) && 
-            input.branch_colors.every(color => typeof color === 'string')) {
+            input.branch_colors.every(color => typeof color === "string")) {
             branch_colors = input.branch_colors;
         } else {
-            console.warn('Invalid branch_colors input. Using default colors.');
+            // eslint-disable-next-line no-console
+            console.warn("Invalid branch_colors input. Using default colors.");
         }
     }
 }
@@ -69,7 +70,7 @@ if (input) {
  *
  * The DJB2 algorithm is a simple and fast hashing function designed by Daniel J. Bernstein.
  * It starts with an initial hash of 5381 and for each character, multiplies the hash by 33
- * and adds the character's ASCII code. The result is returned as an unsigned 32-bit hex string.
+ * and adds the character"s ASCII code. The result is returned as an unsigned 32-bit hex string.
  *
  * @param {string} str - The input string to hash.
  * @returns {string} A hexadecimal string representing the unsigned 32-bit DJB2 hash of the input.
@@ -90,26 +91,24 @@ function djb2Hash(str) {
  */
 function encodeForMermaid(text) {
     return text
-        .replaceAll('\'', '\\\'')
-        .replaceAll('\'', '\\\'')
-        .replaceAll(':', '\\:')
-        .replaceAll('[', '\\[')
-        .replaceAll(']', '\\]');
+        .replaceAll("\"", "\\\"")
+        .replaceAll("\"", "\\\"")
+        .replaceAll(":", "\\:")
+        .replaceAll("[", "\\[")
+        .replaceAll("]", "\\]");
 }
 
 /* Organize the list items into sections and generate hashes for each item.  The
  * hash is used to create a unique identifier for each node in the graph. */
-
-let nodes_by_section_name = {};
-
-let page = dv.current();
-let lists = page.file.lists;
+const nodes_by_section_name = {};
+const page = dv.current();
+const lists = page.file.lists;
 for (const item of lists) {
 
     // Check if the item matches at least one regex in the node_whitelist
-    let is_whitelisted = node_whitelist.some(regex => regex.test(item.text));
+    const is_whitelisted = node_whitelist.some(regex => regex.test(item.text));
     // Check if the item matches any regex in the node_blacklist
-    let is_blacklisted = node_blacklist.some(regex => regex.test(item.text));
+    const is_blacklisted = node_blacklist.some(regex => regex.test(item.text));
 
     // Skip items that are not whitelisted or are blacklisted
     if (!is_whitelisted || is_blacklisted) {
@@ -117,12 +116,12 @@ for (const item of lists) {
     }
 
     /* Create node for the item */
-    let hash = 'n' + djb2Hash(item.text).padStart(8, '0');
-    let section = item.section.subpath || page.file.name;
-    let node = {
-        'hash': hash,
-        'section': section,
-        'text': item.text
+    const hash = "n" + djb2Hash(item.text).padStart(8, "0");
+    const section = item.section.subpath || page.file.name;
+    const node = {
+        "hash": hash,
+        "section": section,
+        "text": item.text
     };
 
     /* Clean up characters that would break the mermaid graph */
@@ -131,7 +130,7 @@ for (const item of lists) {
 
     /* Add the node to the lists of nodes */
     if (!(node.section in nodes_by_section_name)) {
-        /* Create section if it doesn't exist */
+        /* Create section if it doesn"t exist */
         nodes_by_section_name[node.section] = [];
     }
     nodes_by_section_name[node.section].push(node);
@@ -142,33 +141,33 @@ for (const item of lists) {
  * appear in the list.  If two nodes have the same text, they are treated as the
  * same node, allowing branches to connect to each other. */
 
-const STROKE_WIDTH = '1px'; // Default stroke width
-const STROKE_COLOR = '#000'; // Default stroke color
-const FONT_COLOR = '#000'; // Default stroke color
-const TODO_STROKE_COLOR = '#ff0000'; // Red for TODO items
-const TODO_STROKE_WIDTH = '3px'; // Stroke width for TODO items
-const TODO_FONT_COLOR = '#600'; // Dark red font for TODO items
-//const TODO_FILL_COLOR = '#ffffaa'; // Yellow for TODO items
-let output = '\n\n```mermaid\n';
+const STROKE_WIDTH = "1px"; // Default stroke width
+const STROKE_COLOR = "#000"; // Default stroke color
+const FONT_COLOR = "#000"; // Default stroke color
+const TODO_STROKE_COLOR = "#ff0000"; // Red for TODO items
+const TODO_STROKE_WIDTH = "3px"; // Stroke width for TODO items
+const TODO_FONT_COLOR = "#600"; // Dark red font for TODO items
+//const TODO_FILL_COLOR = "#ffffaa"; // Yellow for TODO items
+let output = "\n\n```mermaid\n";
 output += `
 %%{
     init: {
-        'flowchart': {
-            'curve': 'linear',
-            'wrappingWidth': 300
+        "flowchart": {
+            "curve": "linear",
+            "wrappingWidth": 300
         }
     }
 }%%
 `;
 let branch_color = 0;
-output += 'graph TD\n';
+output += "graph TD\n";
 
 for (const section in nodes_by_section_name) {
 
     // Check if the section matches at least one regex in the section_whitelist
-    let is_section_whitelisted = section_whitelist.some(regex => regex.test(section));
+    const is_section_whitelisted = section_whitelist.some(regex => regex.test(section));
     // Check if the section matches any regex in the section_blacklist
-    let is_section_blacklisted = section_blacklist.some(regex => regex.test(section));
+    const is_section_blacklisted = section_blacklist.some(regex => regex.test(section));
 
     // Skip sections that are not whitelisted or are blacklisted
     if (!is_section_whitelisted || is_section_blacklisted) {
@@ -176,23 +175,23 @@ for (const section in nodes_by_section_name) {
     }
 
     /* Generate section hash */
-    let section_hash = 's' + djb2Hash(section);
+    const section_hash = "s" + djb2Hash(section);
     let previous_node_hash = section_hash;
 
     /* Write section header */
-    output += `\n  ${section_hash}['**${section}**']\n`;
+    output += `\n  ${section_hash}["**${section}**"]\n`;
     output += `    style ${section_hash} stroke:#000,stroke-width:3px,fill:${branch_colors[branch_color]}\n`;
     for (const node of nodes_by_section_name[section]) {
 
         /* Write node */
-        output += `    ${node.hash}['${node.text}']\n`;
+        output += `    ${node.hash}["${node.text}"]\n`;
 
         /* Write node style */
         let stroke_width = STROKE_WIDTH;
         let stroke_color = STROKE_COLOR;
-        let fill_color = branch_colors[branch_color];
+        const fill_color = branch_colors[branch_color];
         let font_color = FONT_COLOR;
-        if (node.text.includes('TODO')) {
+        if (node.text.includes("TODO")) {
             stroke_color = TODO_STROKE_COLOR;
             stroke_width = TODO_STROKE_WIDTH;
             // fill_color = TODO_FILL_COLOR;
@@ -208,7 +207,7 @@ for (const section in nodes_by_section_name) {
     /* Rotate branch color */
     branch_color = (branch_color + 1) % branch_colors.length;
 }
-output += '```\n\n';
+output += "```\n\n";
 
 /* Output the graph.  The graph is displayed as a mermaid diagram in Obsidian. */
 

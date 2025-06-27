@@ -9,11 +9,18 @@
   },
   "extends": "eslint:recommended",
   "rules": {
-    "semi": ["error", "always"],
-    "quotes": ["error", "single"],
+    "curly": "warn",
     "eqeqeq": "error",
+    "no-console": "warn",
+    "no-implicit-globals": "error",
+    "no-shadow": "error",
+    "no-undef": "error",
     "no-unused-vars": "warn",
-    "no-console": "off"
+    "no-var": "error",
+    "prefer-const": "warn",
+    "quotes": ["error", "double"],
+    "semi": ["error", "always"],
+    "strict": ["error", "global"]
   },
   "ignorePatterns": [
     ".graveyard/"
