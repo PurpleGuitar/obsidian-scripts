@@ -1,3 +1,5 @@
+/* global dv, input */
+
 /*
  * This DataviewJS script creates a table of contents for a page or set of
  * pages, optionally filtering to just the headings that match a regex.  

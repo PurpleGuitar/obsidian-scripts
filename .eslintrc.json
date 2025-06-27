@@ -1,0 +1,17 @@
+{
+  "env": {
+    "es2022": true,
+    "node": true
+  },
+  "extends": "eslint:recommended",
+  "rules": {
+    "semi": ["error", "always"],
+    "quotes": ["error", "single"],
+    "eqeqeq": "error",
+    "no-unused-vars": "warn",
+    "no-console": "off"
+  },
+  "ignorePatterns": [
+    ".graveyard/"
+  ]
+}

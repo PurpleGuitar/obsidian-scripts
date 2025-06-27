@@ -1,3 +1,5 @@
+/* global dv */
+
 // Helper function to print a section of links
 function printLinksSection(title, pages) {
     if (pages.length > 0) {
