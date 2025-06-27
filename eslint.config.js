@@ -1,5 +1,8 @@
 export default [
   {
+    ignores: ['.graveyard/**'],
+  },
+  {
     files: ['**/*.js'],
     languageOptions: {
       ecmaVersion: 2022, // Use latest ECMAScript features
