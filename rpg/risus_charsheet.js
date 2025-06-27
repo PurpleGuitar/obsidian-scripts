@@ -29,7 +29,7 @@
 
 /* Check input */
 if (!input.page) {
-    return "Error: Please provide input.page.";
+    throw new Error("Error: Please provide input.page.");
 }
 let pageName = input.page;
 
@@ -43,7 +43,7 @@ if (match) {
 /* Get matching page. */
 const page = dv.page(pageName);
 if (!page) {
-    return "Error: Can't find matching page for '" + input.page + "'";
+    throw new Error("Error: Can't find matching page for '" + input.page + "'");
 }
 
 /* Track total dice. */
@@ -159,6 +159,6 @@ if (input.debug) {
 }
 
 /* All done. */
-return debugMd + portraitMd + playerMd + totalDiceMd + clicheMd + extraMd + noteMd + debugMd;
+dv.paragraph(debugMd + portraitMd + playerMd + totalDiceMd + clicheMd + extraMd + noteMd + debugMd);
 
 // vim: set noswapfile :
