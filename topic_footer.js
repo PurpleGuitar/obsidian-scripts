@@ -41,7 +41,7 @@ function folderSortKey(folderName) {
   if (folderName === "Topics") return 0;
   // Journal folders should be last
   if (folderName.startsWith("Journal")) return 9;
-  // Otherwise just sort by name
+  // Everything else in the middle
   return 5;
 }
 
@@ -80,7 +80,7 @@ for (const folder of inlinkFolders) {
 // Display this page's metadata in the footer
 dv.el("hr", "");
 var output = "";
-output += printFooterItem("Topic", current.topics, "Topics", true);
-output += printFooterItem("See also", current.seealso, "See also");
 output += printFooterItem("Source", current.sources, "Sources");
+output += printFooterItem("See also", current.seealso, "See also");
+output += printFooterItem("Topic", current.topics, "Topics", true);
 dv.paragraph(output);
