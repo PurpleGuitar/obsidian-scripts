@@ -1,10 +1,39 @@
 /* global dv */
 
+// Helper function to determine sort order of folders.
+// "Topics" always first, "Journal" always last, everything else alphabetical.
+function folderSortKey(a, b) {
+    // "Topics" always first
+    if (a === "Topics") { return -1; }
+    if (b === "Topics") { return 1; }
+    // "Journal" always last
+    if (a === "Journal") { return 1; }
+    if (b === "Journal") { return -1; }
+    // For everything else, sort alphabetically
+    return a.localeCompare(b);
+}
+
+// Helper function to determine sort order of pages.
+// Pages with a sort key come first, then sorted by file name.
+function pageSortKey(a, b) {
+    // Sort by sort key if it exists
+    if (a.sort && b.sort) {
+        return Number(a.sort) - Number(b.sort);
+    } else if (a.sort) {
+        return -1; // a has sort key, b does not
+    } else if (b.sort) {
+        return 1; // b has sort key, a does not
+    }
+    // If no sort key, sort by file name
+    return a.file.name.localeCompare(b.file.name);
+}
+
 // Helper function to print a section of links
 function printLinksSection(title, pages) {
     if (pages.length > 0) {
         dv.header(1, title);
-        dv.list(pages.map(page => {
+        const sortedPages = [...pages].sort(pageSortKey);
+        dv.list(sortedPages.map(page => {
             if (page.summary) {
                 // Page has a summary, include it in the link
                 return page.file.link + ": " + page.summary;
@@ -34,19 +63,6 @@ function printFooterItem(label, items, pluralLabel, showMessageIfEmpty = false) 
         }
     }
     return output;
-}
-
-// Helper function to determine sort order of folders.
-// "Topics" always first, "Journal" always last, everything else alphabetical.
-function folderSortKey(a, b) {
-    // "Topics" always first
-    if (a === "Topics") { return -1; }
-    if (b === "Topics") { return 1; }
-    // "Journal" always last
-    if (a === "Journal") { return 1; }
-    if (b === "Journal") { return -1; }
-    // For everything else, sort alphabetically
-    return a.localeCompare(b);
 }
 
 // Get current page
