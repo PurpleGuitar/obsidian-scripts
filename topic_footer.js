@@ -14,17 +14,7 @@ function folderSortKey(a, b) {
 }
 
 // Helper function to determine sort order of pages.
-// Pages with a sort key come first, then sorted by file name.
 function pageSortKey(a, b) {
-    // Sort by sort key if it exists
-    if (a.sort && b.sort) {
-        return Number(a.sort) - Number(b.sort);
-    } else if (a.sort) {
-        return -1; // a has sort key, b does not
-    } else if (b.sort) {
-        return 1; // b has sort key, a does not
-    }
-    // If no sort key, sort by file name
     return a.file.name.localeCompare(b.file.name);
 }
 
