@@ -40,4 +40,4 @@ done
 SOURCE_DIR="$( cd -P "$( dirname "$SOURCE" )" >/dev/null 2>&1 && pwd )"
 
 # Tar up a backup of the vault, starting at the grandparent of this script's dir
-tar cvfz $BACKUP_DIR/$BACKUP_FILENAME $SOURCE_DIR/../../*
+tar --exclude-vcs -zcvf ${BACKUP_DIR}/${BACKUP_FILENAME} ${SOURCE_DIR}/../../*

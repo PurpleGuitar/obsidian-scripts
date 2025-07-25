@@ -83,7 +83,6 @@ dv.view("Scripts/toc", {
 
 Show matching contents under headings. For example, searching content for "rutabaga" will show this section and the matching text under it.  
 
-
 ```dataviewjs
 dv.view("Scripts/toc", {
     regex: "ruta" + "baga", //fancy footwork to avoid matching this query
@@ -92,7 +91,7 @@ dv.view("Scripts/toc", {
 });
 ```
 
-Tip: If you find your search matching the query itself, you can work around that by concatenating the `regex` string.  See the code block above for an example.
+Tip: If you find your search matching the query itself, you can work around that by concatenating the `regex` string. See the code block above for an example.
 
 ## Skip Code Blocks
 
@@ -129,8 +128,3 @@ dv.view("Scripts/toc", {
     debug: true
 });
 ```
-
-
-# See Also
-
-- Topics:: [[DataviewJS]]
