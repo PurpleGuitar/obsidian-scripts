@@ -1,3 +1,5 @@
+This graph was automatically generated from the lists at the bottom of the page.
+
 ```dataviewjs
 dv.view("mermaid_graph_from_lists", {
     branch_colors: [
@@ -7,8 +9,6 @@ dv.view("mermaid_graph_from_lists", {
     ]
 });
 ```
-
-The graph above was automatically generated from the lists below.
 
 # Water
 
