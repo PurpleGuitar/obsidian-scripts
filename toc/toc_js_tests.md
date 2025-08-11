@@ -20,7 +20,7 @@ See: [[toc_js_readme]]
 dv.view("Scripts/toc", {
     // Note the double set of quotes and fully qualified path:
     // '"Folder/Page Name"'
-    from: '"Scripts/toc_js_readme"'
+    from: '"Scripts/toc/toc_js_readme"'
 });
 ```
 
@@ -32,7 +32,7 @@ Headers from pages in the Scripts directory. When multiple pages are present, th
 
 ```dataviewjs
 dv.view("Scripts/toc", {
-    from: '"Scripts"',
+    from: '"Scripts/toc"',
 });
 ```
 
@@ -40,7 +40,7 @@ dv.view("Scripts/toc", {
 
 ```dataviewjs
 dv.view("Scripts/toc", {
-    from: '"Scripts"',
+    from: '"Scripts/toc"',
     showFilePath: true
 });
 ```
