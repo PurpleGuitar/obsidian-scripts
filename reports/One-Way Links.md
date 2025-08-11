@@ -5,7 +5,7 @@ filters:
     - '!file.inFolder("Scripts")'
     - "!formula.Missing.isEmpty()"
 formulas:
-  Missing: file.backlinks.filter(!file.links.contains(value))
+  Missing: file.backlinks.filter(!file.links.contains(value)).filter(value.asFile().folder != "Inbox")
 properties:
   file.name:
     displayName: Page
