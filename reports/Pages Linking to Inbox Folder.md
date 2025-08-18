@@ -1,24 +1,21 @@
 ```base
 filters:
   and:
-    - '!file.inFolder("Inbox")'
-    - formula.Untitled == true
+    - '!file.folder.contains("Inbox")'
+    - '!formula["Inbox Links"].isEmpty()'
 formulas:
-  Untitled: file.links.map(value.asFile().folder).contains("Inbox")
-properties:
-  formula.Untitled:
-    displayName: Links to Inbox?
+  Inbox Links: file.links.filter(value.asFile().folder.contains("Inbox"))
 views:
   - type: table
     name: Table
     order:
       - file.name
-      - formula.Untitled
+      - formula.Inbox Links
     sort:
       - property: file.name
         direction: DESC
     limit: 10
     columnSize:
-      file.name: 518
+      file.name: 453
 
 ```
