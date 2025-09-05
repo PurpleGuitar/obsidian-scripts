@@ -1,4 +1,6 @@
-let current = dv.current();
+/* global dv */
+
+const current = dv.current();
 
 if (current.cliches) {
     dv.el("h1", "Clichés");
