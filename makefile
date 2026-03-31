@@ -11,7 +11,7 @@ endif
 .PHONY: backup
 backup:
 	tar czfv \
-		$(OBSIDIAN_BACKUP_DIR)/$(notdir $(CURDIR))-backup-$$(date +"%Y-%m-%d_%H-%M-%S").tar.gz \
+		"$(OBSIDIAN_BACKUP_DIR)/$(notdir $(CURDIR))-backup-$$(date +"%Y-%m-%d_%H-%M-%S").tar.gz" \
 		--exclude='.obsidian' \
 		--exclude='.trash' \
 		.

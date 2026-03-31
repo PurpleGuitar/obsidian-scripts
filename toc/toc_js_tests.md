@@ -57,6 +57,17 @@ dv.view("Scripts/toc", {
 });
 ```
 
+## Filter H1 header
+
+Filter for 'A', but only under "Filtering"
+
+```dataviewjs
+dv.view("Scripts/toc", {
+    regex: "A",
+    h1Regex: "Filtering"
+});
+```
+
 ## Case-sensitive Filter
 
 Filter for 'A', case sensitive:

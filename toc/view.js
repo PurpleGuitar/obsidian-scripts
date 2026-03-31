@@ -8,7 +8,7 @@
 /* Default filter regex is case insensitive */
 let filterRegexOptions = "i";
 
-/* INPUT: Pages to search, using DataView"s FROM syntax. */
+/* INPUT: Pages to search, using DataView's FROM syntax. */
 let from = "\"" + dv.current().file.path + "\"";
 if (input && "from" in input) {
     from = input.from;
@@ -27,6 +27,12 @@ if (input && "caseSensitive" in input) {
 let filterRegex = /.*/;
 if (input && "regex" in input) {
     filterRegex = new RegExp(input.regex, filterRegexOptions);
+} 
+
+/* INPUT: Regex for filtering which H1 headings to show */
+let h1FilterRegex = /.*/;
+if (input && "h1Regex" in input) {
+    h1FilterRegex = new RegExp(input.h1Regex, filterRegexOptions);
 } 
 
 /* INPUT: Search content too, not just headers */
@@ -135,7 +141,7 @@ for (const page of pages) {
             isHeading = true;
 
             /* Remember current headers.  Note that we need to do this every time
-             * we see a header, regardless of whether it"s too deep, doesn"t
+             * we see a header, regardless of whether it's too deep, doesn't
              * match, etc., so that we maintain the full context for headers we
              * *do* want to print. */
             for (let i = 1; i <= 6; i++) {
@@ -161,14 +167,19 @@ for (const page of pages) {
             return;
         }
 
-        /* Skip if this line isn"t a heading, unless we"re searching
+        /* Skip if this line isn't a heading, unless we're searching
          * contents too. */
         if (isHeading === false && searchContent === false) {
             return;
         }
 
-        /* Skip if this line doesn"t match the filter. */
+        /* Skip if this line doesn't match the filter. */
         if (matchesFilter === false) {
+            return;
+        }
+
+        /* Skip if this heading's h1 parent doesn't match the h1 filter. */
+        if (currentHeaders[1] && h1FilterRegex.test(currentHeaders[1]) === false) {
             return;
         }
 
