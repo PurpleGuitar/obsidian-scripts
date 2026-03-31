@@ -20,6 +20,7 @@ dv.view("Scripts/toc", {
     // If not specified, defaults to the current page
     // from: '"Notes/Set up a new Chromebook"',
     regex: "f",              // default: ".*"
+    // h1Regex: "History",   // default: ".*"
     // caseSensitive: true,  // default: false
     // searchContent: true,  // default: false
     // maxLevel: 2,          // default: 6
