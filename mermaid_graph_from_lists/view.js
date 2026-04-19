@@ -8,6 +8,9 @@
  * connect to each other.
  */
 
+/* Debug output */
+debug = false; // Set to true to enable debug output
+
 /* Arrays of regular expressions to filter sections.  Sections must match at
  * least one regex in the section_whitelist and none in the section_blacklist to
  * be included. */
@@ -32,6 +35,12 @@ let branch_colors = [
 
 /* Process input parameters, if any */
 if (input) {
+
+    /* Debug output */
+    if ("debug" in input && input.debug) {
+        console.log("Input parameters:", input);
+        debug = true;
+    }
 
     /* Section whitelist */
     if ("section_whitelist" in input && Array.isArray(input.section_whitelist)) {
@@ -147,7 +156,11 @@ const TODO_STROKE_COLOR = "#ff0000"; // Red for TODO items
 const TODO_STROKE_WIDTH = "3px"; // Stroke width for TODO items
 const TODO_FONT_COLOR = "#600"; // Dark red font for TODO items
 //const TODO_FILL_COLOR = "#ffffaa"; // Yellow for TODO items
-let output = "\n\n```mermaid\n";
+let output = ""
+if (debug) {
+    output += "````\n";
+}
+output += "\n\n```mermaid\n";
 output += `
 %%{
     init: {
@@ -207,6 +220,9 @@ for (const section in nodes_by_section_name) {
     branch_color = (branch_color + 1) % branch_colors.length;
 }
 output += "```\n\n";
+if (debug) {
+    output += "````\n";
+}
 
 /* Output the graph.  The graph is displayed as a mermaid diagram in Obsidian. */
 
