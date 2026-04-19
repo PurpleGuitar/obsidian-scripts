@@ -102,6 +102,8 @@ function encodeForMermaid(text) {
     return text
         .replaceAll('\"', "'")
         .replaceAll(":", "\\:")
+        .replaceAll("[[", "")
+        .replaceAll("]]", "")
         .replaceAll("[", "\\[")
         .replaceAll("]", "\\]");
 }
@@ -144,23 +146,29 @@ for (const item of lists) {
     nodes_by_section_name[node.section].push(node);
 }
 
-/* Genrate a mermaid graph from the nodes.  Each section is represented as a
- * separate branch in the graph.  The nodes are connected in the order they
- * appear in the list.  If two nodes have the same text, they are treated as the
- * same node, allowing branches to connect to each other. */
+/* Generate a mermaid graph from the nodes.  Each section is represented as a
+   separate branch in the graph.  The nodes are connected in the order they
+   appear in the list.  If two nodes have the same text, they are treated as the
+   same node, allowing branches to connect to each other. */
 
 const STROKE_WIDTH = "1px"; // Default stroke width
 const STROKE_COLOR = "#000"; // Default stroke color
+const SECTION_STROKE_WIDTH = "3px"; // Stroke width for section headers
 const FONT_COLOR = "#000"; // Default stroke color
 const TODO_STROKE_COLOR = "#ff0000"; // Red for TODO items
-const TODO_STROKE_WIDTH = "3px"; // Stroke width for TODO items
+const TODO_STROKE_WIDTH = "5px"; // Stroke width for TODO items
 const TODO_FONT_COLOR = "#600"; // Dark red font for TODO items
-//const TODO_FILL_COLOR = "#ffffaa"; // Yellow for TODO items
-let output = ""
+const TODO_FILL_COLOR = "white"; // White for TODO items
+
+/* Start the mermaid graph definition.  If debug mode is enabled, wrap the graph 
+   in a code block for easier debugging. */
+let output = "\n\n```mermaid\n";
 if (debug) {
-    output += "````\n";
+    output = "\n\n```\n";
 }
-output += "\n\n```mermaid\n";
+
+/* Mermaid graph configuration.  This sets the flowchart style to use linear curves 
+   and a wrapping width of 300 pixels. */
 output += `
 %%{
     init: {
@@ -171,6 +179,11 @@ output += `
     }
 }%%
 `;
+
+/* Generate the graph.  Each section is a separate branch, 
+   and nodes are connected in the order they appear in the list.  
+   Nodes with the same text are treated as the same node, 
+   allowing branches to connect to each other. */
 let branch_color = 0;
 output += "graph TD\n";
 
@@ -192,7 +205,7 @@ for (const section in nodes_by_section_name) {
 
     /* Write section header */
     output += `\n  ${section_hash}["**${section}**"]\n`;
-    output += `    style ${section_hash} stroke:#000,stroke-width:3px,fill:${branch_colors[branch_color]}\n`;
+    output += `    style ${section_hash} stroke:#000,stroke-width:${SECTION_STROKE_WIDTH},fill:${branch_colors[branch_color]}\n`;
     for (const node of nodes_by_section_name[section]) {
 
         /* Write node */
@@ -201,15 +214,15 @@ for (const section in nodes_by_section_name) {
         /* Write node style */
         let stroke_width = STROKE_WIDTH;
         let stroke_color = STROKE_COLOR;
-        const fill_color = branch_colors[branch_color];
+        let fill_color = branch_colors[branch_color];
         let font_color = FONT_COLOR;
         if (node.text.includes("TODO")) {
             stroke_color = TODO_STROKE_COLOR;
             stroke_width = TODO_STROKE_WIDTH;
-            // fill_color = TODO_FILL_COLOR;
+            fill_color = TODO_FILL_COLOR;
             font_color = TODO_FONT_COLOR;
         }
-        output += `    style ${node.hash} stroke:${stroke_color},stroke-width:${stroke_width},fill:${fill_color},color:${font_color}\n`;
+        output += `    style ${node.hash} stroke:${stroke_color},stroke-width:${stroke_width},fill:${fill_color},color:${font_color},text-align:left\n`;
 
         /* Write edge */
         output += `    ${previous_node_hash} --> ${node.hash}\n`;
