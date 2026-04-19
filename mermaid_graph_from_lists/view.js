@@ -91,8 +91,7 @@ function djb2Hash(str) {
  */
 function encodeForMermaid(text) {
     return text
-        .replaceAll("\"", "\\\"")
-        .replaceAll("\"", "\\\"")
+        .replaceAll('\"', "'")
         .replaceAll(":", "\\:")
         .replaceAll("[", "\\[")
         .replaceAll("]", "\\]");
