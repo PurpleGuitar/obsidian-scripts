@@ -22,6 +22,9 @@ let section_blacklist = []; // Default: exclude no sections
 let node_whitelist = [/.*/]; // Default: include all items
 let node_blacklist = []; // Default: exclude no items
 
+/* Node customizations */
+let node_wrapping_width = 300; // Default wrapping width for node text in pixels
+
 /* Colors for node branches */
 let branch_colors = [
     "#C8DFF0", // Muted blue
@@ -60,6 +63,11 @@ if (input) {
     /* Node blacklist */
     if ("node_blacklist" in input && Array.isArray(input.node_blacklist)) {
         node_blacklist = input.node_blacklist.map(regex => new RegExp(regex));
+    }
+
+    /* Node wrapping width */
+    if ("node_wrapping_width" in input && Number.isInteger(input.node_wrapping_width)) {
+        node_wrapping_width = input.node_wrapping_width;
     }
 
     /* Branch colors */
@@ -167,14 +175,15 @@ if (debug) {
     output = "\n\n```\n";
 }
 
-/* Mermaid graph configuration.  This sets the flowchart style to use linear curves 
-   and a wrapping width of 300 pixels. */
+/* Mermaid graph configuration.  
+   This sets the flowchart style to use linear curves 
+   and the specified wrapping width. */
 output += `
 %%{
     init: {
         "flowchart": {
             "curve": "linear",
-            "wrappingWidth": 300
+            "wrappingWidth": ${node_wrapping_width}
         }
     }
 }%%
