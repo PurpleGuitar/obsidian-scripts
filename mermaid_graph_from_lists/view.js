@@ -1,6 +1,6 @@
 /* global dv, input */
 
-/* 
+/*
  * This script generates a mermaid graph from the list items in the current note.
  * Each section of the note is represented as a separate branch in the graph.
  * The nodes are connected in the order they appear in the list.  If two nodes
@@ -158,22 +158,28 @@ for (const item of lists) {
 }
 
 /* Generate a mermaid graph from the nodes.  Each section is represented as a
-   separate branch in the graph.  The nodes are connected in the order they
-   appear in the list.  If two nodes have the same text, they are treated as the
-   same node, allowing branches to connect to each other. */
+ * separate branch in the graph.  The nodes are connected in the order they
+ * appear in the list.  If two nodes have the same text, they are treated as the
+ * same node, allowing branches to connect to each other. */
 
+/* Section header defaults */
 const SECTION_STROKE_WIDTH = "3px"; // Stroke width for section headers
+
+/* Node defaults */
 const NODE_STROKE_WIDTH = "1px"; // Default stroke width
 const NODE_STROKE_COLOR = "#000"; // Default stroke color
 const NODE_FONT_COLOR = "#000"; // Default stroke color
 const NODE_SHARED_FILL_COLOR = "#eeeeee"; // Light gray for shared nodes
+
+/* TODO item defaults */
 const TODO_STROKE_COLOR = "#ff0000"; // Red for TODO items
-const TODO_STROKE_WIDTH = "5px"; // Stroke width for TODO items
+const TODO_STROKE_WIDTH = "2px"; // Stroke width for TODO items
 const TODO_FONT_COLOR = "#600"; // Dark red font for TODO items
 const TODO_FILL_COLOR = "white"; // White for TODO items
+const TODO_DASHARRAY = "11 5"; // Dashed border for TODO items
 
-/* Start the mermaid graph definition.  If debug mode is enabled, wrap the graph 
-   in a code block for easier debugging. */
+/* Start the mermaid graph definition.  If debug mode is enabled, use a plain
+ * code block instead of a mermaid block to make it easier to see the raw output. */
 let output = "\n\n```mermaid\n";
 if (debug) {
     output = "\n\n```\n";
@@ -193,12 +199,11 @@ output += `
 }%%
 `;
 
-/* Generate the graph.  Each section is a separate branch, 
-   and nodes are connected in the order they appear in the list.  
-   Nodes with the same text are treated as the same node, 
-   allowing branches to connect to each other. */
-let branch_color = 0;
-output += "graph TD\n";
+/* Generate the graph.  Each section is a separate branch, and nodes are
+ * connected in the order they appear in the list.  Nodes with the same text are
+ * treated as the same node, allowing branches to connect to each other. */
+
+let branch_color = 0; output += "graph TD\n";
 
 for (const section in nodes_by_section_name) {
 
@@ -245,6 +250,7 @@ for (const section in nodes_by_section_name) {
             node_style["stroke-width"] = TODO_STROKE_WIDTH;
             node_style["fill"] = TODO_FILL_COLOR;
             node_style["color"] = TODO_FONT_COLOR;
+            node_style["stroke-dasharray"] = TODO_DASHARRAY;
         }
         output += `    style ${node.hash} ${Object.entries(node_style).map(([k, v]) => `${k}:${v}`).join(",")}\n`;
 
