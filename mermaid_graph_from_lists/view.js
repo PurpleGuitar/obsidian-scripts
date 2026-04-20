@@ -162,10 +162,10 @@ for (const item of lists) {
    appear in the list.  If two nodes have the same text, they are treated as the
    same node, allowing branches to connect to each other. */
 
-const STROKE_WIDTH = "1px"; // Default stroke width
-const STROKE_COLOR = "#000"; // Default stroke color
+const NODE_STROKE_WIDTH = "1px"; // Default stroke width
+const NODE_STROKE_COLOR = "#000"; // Default stroke color
 const SECTION_STROKE_WIDTH = "3px"; // Stroke width for section headers
-const FONT_COLOR = "#000"; // Default stroke color
+const NODE_FONT_COLOR = "#000"; // Default stroke color
 const TODO_STROKE_COLOR = "#ff0000"; // Red for TODO items
 const TODO_STROKE_WIDTH = "5px"; // Stroke width for TODO items
 const TODO_FONT_COLOR = "#600"; // Dark red font for TODO items
@@ -230,23 +230,23 @@ for (const section in nodes_by_section_name) {
         output += `    ${node.hash}["${node.text}"]\n`;
 
         /* Write node style */
-        const style = {
-            "stroke": STROKE_COLOR,
-            "stroke-width": STROKE_WIDTH,
+        const node_style = {
+            "stroke": NODE_STROKE_COLOR,
+            "stroke-width": NODE_STROKE_WIDTH,
             "fill": branch_colors[branch_color],
-            "color": FONT_COLOR,
+            "color": NODE_FONT_COLOR,
             "text-align": "left"
         };
         if (node.shared) {
-            style["fill"] = SHARED_FILL_COLOR;
+            node_style["fill"] = SHARED_FILL_COLOR;
         }
         if (node.text.includes("TODO")) {
-            style["stroke"] = TODO_STROKE_COLOR;
-            style["stroke-width"] = TODO_STROKE_WIDTH;
-            style["fill"] = TODO_FILL_COLOR;
-            style["color"] = TODO_FONT_COLOR;
+            node_style["stroke"] = TODO_STROKE_COLOR;
+            node_style["stroke-width"] = TODO_STROKE_WIDTH;
+            node_style["fill"] = TODO_FILL_COLOR;
+            node_style["color"] = TODO_FONT_COLOR;
         }
-        output += `    style ${node.hash} ${Object.entries(style).map(([k, v]) => `${k}:${v}`).join(",")}\n`;
+        output += `    style ${node.hash} ${Object.entries(node_style).map(([k, v]) => `${k}:${v}`).join(",")}\n`;
 
         /* Write edge */
         output += `    ${previous_node_hash} --> ${node.hash}\n`;
