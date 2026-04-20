@@ -218,27 +218,35 @@ for (const section in nodes_by_section_name) {
 
     /* Write section header */
     output += `\n  ${section_hash}["**${section}**"]\n`;
-    output += `    style ${section_hash} stroke:#000,stroke-width:${SECTION_STROKE_WIDTH},fill:${branch_colors[branch_color]}\n`;
+    const section_style = {
+        "stroke": "#000",
+        "stroke-width": SECTION_STROKE_WIDTH,
+        "fill": branch_colors[branch_color]
+    };
+    output += `    style ${section_hash} ${Object.entries(section_style).map(([k, v]) => `${k}:${v}`).join(",")}\n`;
     for (const node of nodes_by_section_name[section]) {
 
         /* Write node */
         output += `    ${node.hash}["${node.text}"]\n`;
 
         /* Write node style */
-        let stroke_width = STROKE_WIDTH;
-        let stroke_color = STROKE_COLOR;
-        let fill_color = branch_colors[branch_color];
-        let font_color = FONT_COLOR;
+        const style = {
+            "stroke": STROKE_COLOR,
+            "stroke-width": STROKE_WIDTH,
+            "fill": branch_colors[branch_color],
+            "color": FONT_COLOR,
+            "text-align": "left"
+        };
         if (node.shared) {
-            fill_color = SHARED_FILL_COLOR;
+            style["fill"] = SHARED_FILL_COLOR;
         }
         if (node.text.includes("TODO")) {
-            stroke_color = TODO_STROKE_COLOR;
-            stroke_width = TODO_STROKE_WIDTH;
-            fill_color = TODO_FILL_COLOR;
-            font_color = TODO_FONT_COLOR;
+            style["stroke"] = TODO_STROKE_COLOR;
+            style["stroke-width"] = TODO_STROKE_WIDTH;
+            style["fill"] = TODO_FILL_COLOR;
+            style["color"] = TODO_FONT_COLOR;
         }
-        output += `    style ${node.hash} stroke:${stroke_color},stroke-width:${stroke_width},fill:${fill_color},color:${font_color},text-align:left\n`;
+        output += `    style ${node.hash} ${Object.entries(style).map(([k, v]) => `${k}:${v}`).join(",")}\n`;
 
         /* Write edge */
         output += `    ${previous_node_hash} --> ${node.hash}\n`;
