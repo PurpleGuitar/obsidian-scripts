@@ -1,7 +1,8 @@
-This graph was automatically generated from the lists at the bottom of the page.
+This graph is automatically generated from the lists at the bottom of the page.
 
 ```dataviewjs
 dv.view("mermaid_graph_from_lists", {
+    debug: false,
     branch_colors: [
         "#faf4ec", // Foamed Milk
         "#cbb4ad", // Light Espresso
@@ -35,5 +36,6 @@ dv.view("mermaid_graph_from_lists", {
 - Get a mug down from the rack
 - Put a spoonful of honey in the mug
 - Pour coffee into mug
+- Stir coffee to dissolve the honey
 - Pour cream into mug
 - TODO: drink coffee

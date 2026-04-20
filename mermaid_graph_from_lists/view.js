@@ -8,20 +8,6 @@
  * connect to each other.
  */
 
-/* Debug output */
-let debug = false; // Set to true to enable debug output
-
-/* Arrays of regular expressions to filter sections.  Sections must match at
- * least one regex in the section_whitelist and none in the section_blacklist to
- * be included. */
-let section_whitelist = [/.*/]; // Default: include all sections
-let section_blacklist = []; // Default: exclude no sections
-
-/* Arrays of regular expressions to filter list items.  Items must match at least
- * one regex in the node_whitelist and none in the node_blacklist to be included. */
-let node_whitelist = [/.*/]; // Default: include all items
-let node_blacklist = []; // Default: exclude no items
-
 /**
  * Builds an array of RegExp objects from an input string list.
  * Invalid patterns are skipped; if all provided patterns are invalid,
@@ -64,6 +50,54 @@ function parseRegexList(patterns, list_name, current_list) {
 
     return parsed;
 }
+
+/**
+ * Generates a hash for a given string using the DJB2 algorithm.
+ *
+ * The DJB2 algorithm is a simple and fast hashing function designed by Daniel J. Bernstein.
+ * It starts with an initial hash of 5381 and for each character, multiplies the hash by 33
+ * and adds the character"s ASCII code. The result is returned as an unsigned 32-bit hex string.
+ *
+ * @param {string} str - The input string to hash.
+ * @returns {string} A hexadecimal string representing the unsigned 32-bit DJB2 hash of the input.
+ */
+function djb2Hash(str) {
+  let hash = 5381;
+  for (let i = 0; i < str.length; i++) {
+    hash = ((hash << 5) + hash) + str.charCodeAt(i); // hash * 33 + c
+  }
+  return (hash >>> 0).toString(16); // Unsigned 32-bit hex string
+}
+
+/**
+ * Encodes a text string to escape characters that would break a Mermaid graph.
+ *
+ * @param {string} text - The input text to encode.
+ * @returns {string} The encoded text.
+ */
+function encodeForMermaid(text) {
+    return text
+        .replaceAll('\"', "'")
+        .replaceAll(":", "\\:")
+        .replaceAll("[[", "")
+        .replaceAll("]]", "")
+        .replaceAll("[", "\\[")
+        .replaceAll("]", "\\]");
+}
+
+/* Debug output */
+let debug = false; // Set to true to enable debug output
+
+/* Arrays of regular expressions to filter sections.  Sections must match at
+ * least one regex in the section_whitelist and none in the section_blacklist to
+ * be included. */
+let section_whitelist = [/.*/]; // Default: include all sections
+let section_blacklist = []; // Default: exclude no sections
+
+/* Arrays of regular expressions to filter list items.  Items must match at least
+ * one regex in the node_whitelist and none in the node_blacklist to be included. */
+let node_whitelist = [/.*/]; // Default: include all items
+let node_blacklist = []; // Default: exclude no items
 
 /* Node customizations */
 let node_wrapping_width = 300; // Default wrapping width for node text in pixels
@@ -124,40 +158,6 @@ if (input) {
             console.warn("Invalid branch_colors input. Using previous colors.");
         }
     }
-}
-
-/**
- * Generates a hash for a given string using the DJB2 algorithm.
- *
- * The DJB2 algorithm is a simple and fast hashing function designed by Daniel J. Bernstein.
- * It starts with an initial hash of 5381 and for each character, multiplies the hash by 33
- * and adds the character"s ASCII code. The result is returned as an unsigned 32-bit hex string.
- *
- * @param {string} str - The input string to hash.
- * @returns {string} A hexadecimal string representing the unsigned 32-bit DJB2 hash of the input.
- */
-function djb2Hash(str) {
-  let hash = 5381;
-  for (let i = 0; i < str.length; i++) {
-    hash = ((hash << 5) + hash) + str.charCodeAt(i); // hash * 33 + c
-  }
-  return (hash >>> 0).toString(16); // Unsigned 32-bit hex string
-}
-
-/**
- * Encodes a text string to escape characters that would break a Mermaid graph.
- *
- * @param {string} text - The input text to encode.
- * @returns {string} The encoded text.
- */
-function encodeForMermaid(text) {
-    return text
-        .replaceAll('\"', "'")
-        .replaceAll(":", "\\:")
-        .replaceAll("[[", "")
-        .replaceAll("]]", "")
-        .replaceAll("[", "\\[")
-        .replaceAll("]", "\\]");
 }
 
 /* Organize the list items into sections and generate hashes for each item.  The
@@ -306,10 +306,7 @@ for (const section in nodes_by_section_name) {
     /* Rotate branch color */
     branch_color = (branch_color + 1) % branch_colors.length;
 }
-output += "```\n\n";
-if (debug) {
-    output += "````\n";
-}
+output += "\n\n```\n\n";
 
 /* Output the graph.  The graph is displayed as a mermaid diagram in Obsidian. */
 
