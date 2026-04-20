@@ -119,6 +119,7 @@ function encodeForMermaid(text) {
 /* Organize the list items into sections and generate hashes for each item.  The
  * hash is used to create a unique identifier for each node in the graph. */
 const nodes_by_section_name = {};
+const nodes_by_hash = {};
 const page = dv.current();
 const lists = page.file.lists;
 for (const item of lists) {
@@ -134,12 +135,13 @@ for (const item of lists) {
     }
 
     /* Create node for the item */
-    const hash = "n" + djb2Hash(item.text).padStart(8, "0");
+    const node_hash = "n" + djb2Hash(item.text).padStart(8, "0");
     const section = item.section.subpath || page.file.name;
     const node = {
-        "hash": hash,
+        "hash": node_hash,
         "section": section,
-        "text": item.text
+        "text": item.text,
+        "shared": node_hash in nodes_by_hash // Indicates if this node is shared with another section
     };
 
     /* Clean up characters that would break the mermaid graph */
@@ -152,6 +154,7 @@ for (const item of lists) {
         nodes_by_section_name[node.section] = [];
     }
     nodes_by_section_name[node.section].push(node);
+    nodes_by_hash[node.hash] = node;
 }
 
 /* Generate a mermaid graph from the nodes.  Each section is represented as a
@@ -167,6 +170,7 @@ const TODO_STROKE_COLOR = "#ff0000"; // Red for TODO items
 const TODO_STROKE_WIDTH = "5px"; // Stroke width for TODO items
 const TODO_FONT_COLOR = "#600"; // Dark red font for TODO items
 const TODO_FILL_COLOR = "white"; // White for TODO items
+const SHARED_FILL_COLOR = "#eeeeee"; // Light gray for shared nodes
 
 /* Start the mermaid graph definition.  If debug mode is enabled, wrap the graph 
    in a code block for easier debugging. */
@@ -225,6 +229,9 @@ for (const section in nodes_by_section_name) {
         let stroke_color = STROKE_COLOR;
         let fill_color = branch_colors[branch_color];
         let font_color = FONT_COLOR;
+        if (node.shared) {
+            fill_color = SHARED_FILL_COLOR;
+        }
         if (node.text.includes("TODO")) {
             stroke_color = TODO_STROKE_COLOR;
             stroke_width = TODO_STROKE_WIDTH;
