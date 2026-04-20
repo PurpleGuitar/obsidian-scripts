@@ -162,15 +162,15 @@ for (const item of lists) {
    appear in the list.  If two nodes have the same text, they are treated as the
    same node, allowing branches to connect to each other. */
 
+const SECTION_STROKE_WIDTH = "3px"; // Stroke width for section headers
 const NODE_STROKE_WIDTH = "1px"; // Default stroke width
 const NODE_STROKE_COLOR = "#000"; // Default stroke color
-const SECTION_STROKE_WIDTH = "3px"; // Stroke width for section headers
 const NODE_FONT_COLOR = "#000"; // Default stroke color
+const NODE_SHARED_FILL_COLOR = "#eeeeee"; // Light gray for shared nodes
 const TODO_STROKE_COLOR = "#ff0000"; // Red for TODO items
 const TODO_STROKE_WIDTH = "5px"; // Stroke width for TODO items
 const TODO_FONT_COLOR = "#600"; // Dark red font for TODO items
 const TODO_FILL_COLOR = "white"; // White for TODO items
-const SHARED_FILL_COLOR = "#eeeeee"; // Light gray for shared nodes
 
 /* Start the mermaid graph definition.  If debug mode is enabled, wrap the graph 
    in a code block for easier debugging. */
@@ -238,7 +238,7 @@ for (const section in nodes_by_section_name) {
             "text-align": "left"
         };
         if (node.shared) {
-            node_style["fill"] = SHARED_FILL_COLOR;
+            node_style["fill"] = NODE_SHARED_FILL_COLOR;
         }
         if (node.text.includes("TODO")) {
             node_style["stroke"] = TODO_STROKE_COLOR;
