@@ -36,3 +36,4 @@ dv.view("mermaid_graph_from_lists", {
 - Put a spoonful of honey in the mug
 - Pour coffee into mug
 - Pour cream into mug
+- TODO: drink coffee
