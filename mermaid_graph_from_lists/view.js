@@ -9,7 +9,7 @@
  */
 
 /* Debug output */
-debug = false; // Set to true to enable debug output
+let debug = false; // Set to true to enable debug output
 
 /* Arrays of regular expressions to filter sections.  Sections must match at
  * least one regex in the section_whitelist and none in the section_blacklist to
@@ -21,6 +21,49 @@ let section_blacklist = []; // Default: exclude no sections
  * one regex in the node_whitelist and none in the node_blacklist to be included. */
 let node_whitelist = [/.*/]; // Default: include all items
 let node_blacklist = []; // Default: exclude no items
+
+/**
+ * Builds an array of RegExp objects from an input string list.
+ * Invalid patterns are skipped; if all provided patterns are invalid,
+ * the existing list is preserved.
+ *
+ * @param {unknown[]} patterns - Input patterns from user input.
+ * @param {string} list_name - Friendly list name for warnings.
+ * @param {RegExp[]} current_list - Existing list to preserve on total failure.
+ * @returns {RegExp[]} Parsed regex list.
+ */
+function parseRegexList(patterns, list_name, current_list) {
+    const parsed = [];
+    let invalid_count = 0;
+
+    for (const pattern of patterns) {
+        if (typeof pattern !== "string") {
+            invalid_count += 1;
+            continue;
+        }
+
+        try {
+            parsed.push(new RegExp(pattern));
+        } catch (error) {
+            invalid_count += 1;
+            // eslint-disable-next-line no-console
+            console.warn(`Invalid regex in ${list_name}: ${pattern}. Skipping.`);
+        }
+    }
+
+    if (patterns.length > 0 && parsed.length === 0) {
+        // eslint-disable-next-line no-console
+        console.warn(`All regex patterns for ${list_name} were invalid. Keeping previous values.`);
+        return current_list;
+    }
+
+    if (invalid_count > 0) {
+        // eslint-disable-next-line no-console
+        console.warn(`Skipped ${invalid_count} invalid regex pattern(s) in ${list_name}.`);
+    }
+
+    return parsed;
+}
 
 /* Node customizations */
 let node_wrapping_width = 300; // Default wrapping width for node text in pixels
@@ -47,22 +90,22 @@ if (input) {
 
     /* Section whitelist */
     if ("section_whitelist" in input && Array.isArray(input.section_whitelist)) {
-        section_whitelist = input.section_whitelist.map(regex => new RegExp(regex));
+        section_whitelist = parseRegexList(input.section_whitelist, "section_whitelist", section_whitelist);
     }
 
     /* Section blacklist */
     if ("section_blacklist" in input && Array.isArray(input.section_blacklist)) {
-        section_blacklist = input.section_blacklist.map(regex => new RegExp(regex));
+        section_blacklist = parseRegexList(input.section_blacklist, "section_blacklist", section_blacklist);
     }
 
     /* Node whitelist */
     if ("node_whitelist" in input && Array.isArray(input.node_whitelist)) {
-        node_whitelist = input.node_whitelist.map(regex => new RegExp(regex));
+        node_whitelist = parseRegexList(input.node_whitelist, "node_whitelist", node_whitelist);
     }
 
     /* Node blacklist */
     if ("node_blacklist" in input && Array.isArray(input.node_blacklist)) {
-        node_blacklist = input.node_blacklist.map(regex => new RegExp(regex));
+        node_blacklist = parseRegexList(input.node_blacklist, "node_blacklist", node_blacklist);
     }
 
     /* Node wrapping width */
@@ -72,12 +115,13 @@ if (input) {
 
     /* Branch colors */
     if ("branch_colors" in input) {
-        if (Array.isArray(input.branch_colors) && 
-            input.branch_colors.every(color => typeof color === "string")) {
+        if (Array.isArray(input.branch_colors) &&
+            input.branch_colors.length > 0 &&
+            input.branch_colors.every(color => typeof color === "string" && color.length > 0)) {
             branch_colors = input.branch_colors;
         } else {
             // eslint-disable-next-line no-console
-            console.warn("Invalid branch_colors input. Using default colors.");
+            console.warn("Invalid branch_colors input. Using previous colors.");
         }
     }
 }
