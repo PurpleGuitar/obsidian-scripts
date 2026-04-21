@@ -106,10 +106,10 @@ let node_wrapping_width = 300; // Default wrapping width for node text in pixels
 let branch_colors = [
     "#C8DFF0", // Muted blue
     "#F9C6B8", // Coral red
-    "#BFE8E0", // Deep green
+    "#BFE8E0", // Mediterranean green
     "#FAEBA2", // Soft yellow
     "#DAB9C3", // Dusty rose
-    "#DFF6F5", // Soft teal:%s
+    "#DFF6F5", // Soft teal
     "#FAD9C3", // Warm orange
 ];
 
