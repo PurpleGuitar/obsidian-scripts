@@ -85,6 +85,20 @@ function encodeForMermaid(text) {
         .replaceAll("]", "\\]");
 }
 
+/**
+ * Builds a Mermaid style line for a node or section.
+ *
+ * @param {string} node_hash - Mermaid node identifier.
+ * @param {Record<string, string>} node_style - Style key/value pairs.
+ * @returns {string} Mermaid style line.
+ */
+function buildMermaidNodeStyle(node_hash, node_style) {
+    const style_string = Object.entries(node_style)
+        .map(([k, v]) => `${k}:${v}`)
+        .join(",");
+    return `    style ${node_hash} ${style_string}\n`;
+}
+
 /* Debug output */
 let debug = false; // Set to true to enable debug output
 
@@ -272,7 +286,7 @@ for (const section in nodes_by_section_name) {
         "stroke-width": SECTION_STROKE_WIDTH,
         "fill": branch_colors[branch_color]
     };
-    output += `    style ${section_hash} ${Object.entries(section_style).map(([k, v]) => `${k}:${v}`).join(",")}\n`;
+    output += buildMermaidNodeStyle(section_hash, section_style);
     for (const node of nodes_by_section_name[section]) {
 
         /* Write node */
@@ -296,7 +310,7 @@ for (const section in nodes_by_section_name) {
             node_style["color"] = TODO_FONT_COLOR;
             node_style["stroke-dasharray"] = TODO_DASHARRAY;
         }
-        output += `    style ${node.hash} ${Object.entries(node_style).map(([k, v]) => `${k}:${v}`).join(",")}\n`;
+        output += buildMermaidNodeStyle(node.hash, node_style);
 
         /* Write edge */
         output += `    ${previous_node_hash} --> ${node.hash}\n`;
