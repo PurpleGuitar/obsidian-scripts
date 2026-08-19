@@ -12,6 +12,6 @@ endif
 backup:
 	tar czfv \
 		"$(OBSIDIAN_BACKUP_DIR)/$(notdir $(CURDIR))-backup-$$(date +"%Y-%m-%d_%H-%M-%S").tar.gz" \
-		--exclude='.obsidian' \
-		--exclude='.trash' \
+		--no-wildcards-match-slash \
+		--exclude='.?*' \
 		.
